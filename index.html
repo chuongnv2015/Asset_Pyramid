@@ -1,0 +1,2226 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>Tháp Tài Sản Pro</title>
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="theme-color" content="#070a12" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #070a12;
+      --bg-card: #111724;
+      --bg-card-sub: #172033;
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --accent-green: #10b981;
+      --accent-blue: #3b82f6;
+      --accent-amber: #f59e0b;
+      --accent-rose: #f43f5e;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(180deg, #070a12 0%, #0d1424 50%, #070a12 100%);
+      color: var(--text-main);
+      min-height: 100vh;
+      padding: max(12px, env(safe-area-inset-top)) max(14px, env(safe-area-inset-right)) max(105px, env(safe-area-inset-bottom)) max(14px, env(safe-area-inset-left));
+      line-height: 1.45;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .mono { font-family: 'JetBrains Mono', monospace; }
+    .app-container { max-width: 640px; margin: 0 auto; }
+
+    /* Top Sticky Header */
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      position: sticky;
+      top: 0;
+      background: rgba(7, 10, 18, 0.92);
+      backdrop-filter: blur(16px);
+      padding: 8px 0;
+      z-index: 30;
+    }
+    .brand-group { display: flex; align-items: center; gap: 8px; }
+    .brand-title {
+      font-size: 17px;
+      font-weight: 800;
+      letter-spacing: -0.4px;
+      background: linear-gradient(135deg, #ffffff 40%, #94a3b8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .top-controls { display: flex; align-items: center; gap: 6px; }
+
+    .year-switch-wrap {
+      display: flex;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 13px;
+      padding: 2px;
+      overflow-x: auto;
+      max-width: 210px;
+      scrollbar-width: none;
+    }
+    .year-switch-wrap::-webkit-scrollbar { display: none; }
+
+    .year-chip {
+      padding: 5px 10px;
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+    .year-chip.active {
+      background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(59, 130, 246, 0.4);
+    }
+
+    .icon-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-main);
+      width: 32px;
+      height: 32px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: all 0.2s;
+    }
+    .icon-btn:active { transform: scale(0.94); }
+
+    /* Date & Calculation Mode Bar */
+    .control-grid-bar {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      padding: 10px 12px;
+      margin-bottom: 14px;
+      font-size: 12px;
+    }
+    .date-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .date-input-field {
+      background: rgba(56, 189, 248, 0.1);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      border-radius: 8px;
+      padding: 3px 8px;
+      color: #38bdf8;
+      font-family: inherit;
+      font-weight: 700;
+      font-size: 12px;
+      outline: none;
+      cursor: pointer;
+    }
+    .calc-mode-switch {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      background: #090d16;
+      padding: 3px;
+      border-radius: 11px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    .calc-mode-btn {
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 6px 8px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+    .calc-mode-btn.active {
+      background: rgba(16, 185, 129, 0.18);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.35);
+    }
+
+    /* Hero Dashboard */
+    .dashboard-hero {
+      background: linear-gradient(145deg, rgba(23, 32, 51, 0.95) 0%, rgba(13, 19, 31, 0.98) 100%);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 22px;
+      padding: 16px;
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.4);
+      margin-bottom: 16px;
+    }
+    .hero-top-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 700;
+      padding: 3px 9px; border-radius: 8px; background: rgba(16, 185, 129, 0.15); color: #34d399;
+      border: 1px solid rgba(52, 211, 153, 0.25);
+    }
+    .metrics-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+    .metric-box { background: rgba(0, 0, 0, 0.28); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 15px; padding: 11px 12px; }
+    .metric-label { font-size: 11px; color: var(--text-muted); margin-bottom: 2px; }
+    .metric-value-large { font-size: 18px; font-weight: 800; color: #fff; }
+    .metric-sub { font-size: 10px; margin-top: 3px; font-weight: 600; }
+
+    /* 3-Column Profit Cashflow Card (Day / Month / Year) */
+    .profit-flow-panel {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.11) 0%, rgba(5, 150, 105, 0.18) 100%);
+      border: 1px solid rgba(16, 185, 129, 0.32);
+      border-radius: 16px;
+      padding: 11px 12px;
+    }
+    .profit-flow-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      font-size: 11px;
+      color: #a7f3d0;
+      font-weight: 700;
+    }
+    .profit-flow-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+    .profit-pill {
+      background: rgba(7, 10, 18, 0.48);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: 11px;
+      padding: 8px 9px;
+      text-align: center;
+    }
+    .profit-pill.highlight-year {
+      background: rgba(16, 185, 129, 0.16);
+      border-color: rgba(52, 211, 153, 0.4);
+    }
+    .profit-pill-lbl { font-size: 10px; color: #cbd5e1; margin-bottom: 2px; font-weight: 600; }
+    .profit-pill-val { font-size: 12px; font-weight: 800; color: #34d399; }
+    .profit-pill-sub { font-size: 9px; color: #94a3b8; margin-top: 1px; }
+
+    /* Section Cards */
+    .section-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 20px;
+      padding: 15px;
+      margin-bottom: 16px;
+    }
+    .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .section-title { font-size: 13px; font-weight: 800; display: flex; align-items: center; gap: 6px; color: #f1f5f9; }
+
+    /* Khuyến nghị phân bổ chuẩn tài chính */
+    .recommendation-box {
+      background: rgba(59, 130, 246, 0.08);
+      border: 1px solid rgba(59, 130, 246, 0.2);
+      border-radius: 14px;
+      padding: 11px 13px;
+      margin-bottom: 14px;
+      font-size: 11px;
+    }
+
+    /* Donut & Legend */
+    .chart-layout { display: flex; align-items: center; gap: 16px; }
+    @media (max-width: 420px) { .chart-layout { flex-direction: column; } }
+    .donut-wrap { position: relative; width: 130px; height: 130px; flex-shrink: 0; }
+    .donut-center-info { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; pointer-events: none; text-align: center; }
+    .chart-legend { flex: 1; width: 100%; display: flex; flex-direction: column; gap: 7px; }
+    .legend-item { display: flex; flex-direction: column; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 10px; padding: 6px 9px; cursor: pointer; transition: all 0.2s; }
+    .legend-item.active-group { border-color: #38bdf8; background: rgba(56, 189, 248, 0.1); }
+
+    /* TRUE PYRAMID STRUCTURE (5 TIERS) */
+    .pyramid-wrapper {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 10px 0 4px;
+      background: radial-gradient(circle at 50% 35%, rgba(59, 130, 246, 0.1), transparent 72%);
+    }
+    .pyramid-roof-cap {
+      width: 0;
+      height: 0;
+      border-left: 28px solid transparent;
+      border-right: 28px solid transparent;
+      border-bottom: 18px solid #f43f5e;
+      margin-bottom: 4px;
+      filter: drop-shadow(0 2px 6px rgba(244, 63, 94, 0.45));
+    }
+    .pyramid-stack {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 7px;
+      width: 100%;
+    }
+    .pyramid-tier-bar {
+      position: relative;
+      border-radius: 12px;
+      padding: 8px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.32);
+      overflow: hidden;
+    }
+    .pyramid-tier-bar:hover {
+      transform: translateY(-1px) scale(1.01);
+    }
+    .pyramid-tier-bar::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 40%;
+      background: linear-gradient(180deg, rgba(255,255,255,0.14), transparent);
+      pointer-events: none;
+    }
+    /* Progressive True Pyramid Widths from Top (Tier 5) to Base (Tier 1) */
+    .tier-w-5 {
+      width: 58%;
+      background: linear-gradient(135deg, #be123c 0%, #f43f5e 100%);
+    }
+    .tier-w-4 {
+      width: 68%;
+      background: linear-gradient(135deg, #c2410c 0%, #f97316 100%);
+    }
+    .tier-w-3 {
+      width: 79%;
+      background: linear-gradient(135deg, #0f766e 0%, #14b8a6 100%);
+    }
+    .tier-w-2 {
+      width: 90%;
+      background: linear-gradient(135deg, #1d4ed8 0%, #3b82f6 100%);
+    }
+    .tier-w-1 {
+      width: 100%;
+      background: linear-gradient(135deg, #047857 0%, #10b981 100%);
+    }
+    @media (max-width: 480px) {
+      .tier-w-5 { width: 66%; padding: 7px 9px; }
+      .tier-w-4 { width: 74%; padding: 7px 10px; }
+      .tier-w-3 { width: 83%; padding: 8px 11px; }
+      .tier-w-2 { width: 92%; padding: 8px 11px; }
+      .tier-w-1 { width: 100%; padding: 9px 12px; }
+    }
+
+    /* YEARLY ROADMAP TABLE (FIXED FORMAT) */
+    .year-table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .year-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0 6px;
+      font-size: 11px;
+      min-width: 480px;
+    }
+    .year-table thead th {
+      color: var(--text-muted);
+      font-weight: 700;
+      text-align: right;
+      padding: 6px 8px;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .year-table thead th:first-child { text-align: left; }
+    .year-table thead th:nth-child(2) { text-align: center; }
+
+    .year-table tbody tr {
+      background: rgba(255, 255, 255, 0.025);
+      transition: all 0.2s;
+    }
+    .year-table tbody tr:hover {
+      background: rgba(255, 255, 255, 0.06);
+    }
+    .year-table tbody td {
+      padding: 9px 8px;
+      text-align: right;
+      border-top: 1px solid rgba(255, 255, 255, 0.04);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      white-space: nowrap;
+    }
+    .year-table tbody td:first-child {
+      text-align: left;
+      font-weight: 700;
+      color: #f8fafc;
+      border-left: 1px solid rgba(255, 255, 255, 0.04);
+      border-top-left-radius: 10px;
+      border-bottom-left-radius: 10px;
+    }
+    .year-table tbody td:nth-child(2) {
+      text-align: center;
+    }
+    .year-table tbody td:last-child {
+      border-right: 1px solid rgba(255, 255, 255, 0.04);
+      border-top-right-radius: 10px;
+      border-bottom-right-radius: 10px;
+    }
+    .year-table tbody tr.active-row {
+      background: rgba(59, 130, 246, 0.14);
+      box-shadow: 0 2px 10px rgba(59, 130, 246, 0.15);
+    }
+    .year-table tbody tr.active-row td {
+      border-top-color: rgba(56, 189, 248, 0.4);
+      border-bottom-color: rgba(56, 189, 248, 0.4);
+    }
+    .year-table tbody tr.active-row td:first-child {
+      border-left-color: rgba(56, 189, 248, 0.4);
+      color: #38bdf8;
+    }
+    .year-table tbody tr.active-row td:last-child {
+      border-right-color: rgba(56, 189, 248, 0.4);
+    }
+
+    /* Asset Cards */
+    .group-block { margin-bottom: 16px; }
+    .group-header-card {
+      background: linear-gradient(90deg, rgba(30, 41, 64, 0.85) 0%, rgba(17, 23, 36, 0.9) 100%);
+      border: 1px solid rgba(255, 255, 255, 0.12); border-left: 4px solid #3b82f6;
+      border-radius: 14px; padding: 10px 12px; margin-bottom: 8px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .asset-list { display: flex; flex-direction: column; gap: 8px; }
+    .asset-card {
+      background: var(--bg-card); border: 1px solid var(--border-subtle);
+      border-radius: 16px; padding: 12px 13px; display: flex; align-items: center; justify-content: space-between; cursor: pointer;
+      transition: border-color 0.2s, transform 0.15s;
+    }
+    .asset-card:active { transform: scale(0.99); }
+    .asset-card.alert-border { border-color: rgba(244, 63, 94, 0.45); background: linear-gradient(135deg, rgba(244, 63, 94, 0.07) 0%, var(--bg-card) 100%); }
+
+    /* Bottom bar */
+    .bottom-bar {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      background: rgba(7, 10, 18, 0.95); border-top: 1px solid var(--border-subtle);
+      backdrop-filter: blur(20px); padding: 10px 16px max(14px, env(safe-area-inset-bottom));
+      display: flex; align-items: center; justify-content: space-between; z-index: 40;
+    }
+    .add-action-btn {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: #fff; border: none; border-radius: 14px; padding: 10px 16px;
+      font-size: 13px; font-weight: 700; display: flex; align-items: center; gap: 6px; cursor: pointer;
+      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35);
+    }
+
+    /* Modals */
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(8px);
+      z-index: 60; display: flex; align-items: flex-end; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.25s ease;
+    }
+    .modal-overlay.active { opacity: 1; pointer-events: auto; }
+    .modal-sheet {
+      background: #141b2a; border-top-left-radius: 26px; border-top-right-radius: 26px;
+      width: 100%; max-width: 600px; max-height: 92vh; overflow-y: auto; padding: 18px 16px max(28px, env(safe-area-inset-bottom));
+      border: 1px solid rgba(255, 255, 255, 0.12); border-bottom: none;
+      transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .modal-overlay.active .modal-sheet { transform: translateY(0); }
+    .modal-header {
+      display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;
+      padding-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .modal-title { font-size: 15px; font-weight: 800; color: #fff; }
+
+    /* Type Switcher Tabs inside Form Modal */
+    .type-switcher-bar {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      margin-bottom: 14px;
+      background: #0b101a;
+      padding: 4px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.07);
+    }
+    .type-tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 7px 4px;
+      border-radius: 9px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+    .type-tab-btn.active {
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.35);
+    }
+
+    .form-group { margin-bottom: 11px; }
+    .form-label { display: block; font-size: 11px; font-weight: 600; color: var(--text-muted); margin-bottom: 4px; }
+    .form-control { width: 100%; background: #0b101a; border: 1px solid rgba(255, 255, 255, 0.14); border-radius: 11px; padding: 9px 11px; color: #fff; font-size: 13px; outline: none; font-family: inherit; }
+    .form-control:focus { border-color: #38bdf8; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+    .preview-calc-box {
+      background: rgba(16, 185, 129, 0.08);
+      border: 1px solid rgba(16, 185, 129, 0.28);
+      border-radius: 12px;
+      padding: 10px 12px;
+      margin: 10px 0 12px;
+      font-size: 11px;
+    }
+    .btn-submit { width: 100%; background: linear-gradient(135deg, #10b981, #059669); color: #fff; border: none; border-radius: 13px; padding: 12px; font-size: 14px; font-weight: 700; cursor: pointer; margin-top: 4px; }
+    .toast-msg {
+      position: fixed; top: 16px; left: 50%; transform: translateX(-50%) translateY(-50px);
+      background: #10b981; color: #fff; padding: 8px 16px; border-radius: 20px; font-size: 12px; font-weight: 700;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4); opacity: 0; transition: all 0.3s ease; z-index: 100; pointer-events: none;
+    }
+    .toast-msg.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+  </style>
+</head>
+<body>
+
+  <div id="toast" class="toast-msg">Đã cập nhật dữ liệu!</div>
+
+  <div class="app-container">
+
+    <!-- Top Sticky Bar -->
+    <header class="top-bar">
+      <div class="brand-group">
+        <span style="font-size: 20px;">🏛️</span>
+        <div>
+          <div class="brand-title">THÁP TÀI SẢN PRO</div>
+          <div style="font-size: 10px; color: var(--text-muted);">Quản trị gia sản & dòng tiền sinh lời</div>
+        </div>
+      </div>
+
+      <div class="top-controls">
+        <div class="year-switch-wrap" id="dynamicYearTabs"></div>
+        <button class="icon-btn" onclick="openResetConfirmModal()" title="Khôi phục gốc chuẩn">
+          <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Reference Date, Gold Live Sync & Savings Interest Mode Control -->
+    <div class="control-grid-bar">
+      <div class="date-row">
+        <span style="color: var(--text-muted); display:flex; align-items:center; gap:5px;">
+          <span>📅 Ngày chốt tính lãi hiện tại:</span>
+          <button type="button" onclick="setRefDateToToday()" style="background:rgba(16,185,129,0.16); color:#34d399; border:1px solid rgba(16,185,129,0.35); border-radius:6px; padding:2px 6px; font-size:10px; font-weight:700; cursor:pointer;">Hôm nay</button>
+        </span>
+        <input type="date" id="refDateInput" class="date-input-field mono" value="" onchange="changeRefDate(this.value)" />
+      </div>
+      <div class="date-row" style="padding-top:4px; border-top:1px solid rgba(255,255,255,0.06); font-size:11px;">
+        <div style="display:flex; align-items:center; gap:6px; min-width:0; flex:1;">
+          <span>🪙 Giá mua vào (GitHub):</span>
+          <span class="mono" id="liveGoldPriceSummary" style="color:#fbbf24; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Đang tải từ GitHub...</span>
+        </div>
+        <button type="button" onclick="fetchLiveGoldPrices(true)" style="background:rgba(245,158,11,0.16); color:#fbbf24; border:1px solid rgba(245,158,11,0.35); border-radius:7px; padding:3px 8px; font-size:10px; font-weight:700; cursor:pointer; flex-shrink:0;">↻ Đồng bộ giá vàng</button>
+      </div>
+      <div class="calc-mode-switch">
+        <button id="btnModeAccrued" class="calc-mode-btn active" onclick="setInterestCalcMode('accrued')">
+          ⏱️ Dòng tiền đến ngày hiện tại (Lũy kế)
+        </button>
+        <button id="btnModeFullTerm" class="calc-mode-btn" onclick="setInterestCalcMode('full_term')">
+          🎯 Xem dự phóng trọn kỳ đáo hạn
+        </button>
+      </div>
+    </div>
+
+    <!-- Overview Hero Card -->
+    <div class="dashboard-hero">
+      <div class="hero-top-row">
+        <span class="hero-badge">
+          <span>●</span> <span id="lblActiveYearBadge">Năm tài chính 2026</span>
+        </span>
+        <span style="font-size: 11px; color: var(--text-muted);" id="lblTotalItemsCount">12 tài sản đang giữ</span>
+      </div>
+
+      <div class="metrics-2col">
+        <div class="metric-box">
+          <div class="metric-label">Tổng số vốn gốc</div>
+          <div class="metric-value-large mono" id="heroOriginPrincipal">3,96 Tỷ</div>
+          <div class="metric-sub mono" style="color: var(--text-muted);" id="heroOriginVND">3.959.200.000 ₫</div>
+        </div>
+        <div class="metric-box" style="border-color: rgba(56, 189, 248, 0.28); background: rgba(56, 189, 248, 0.08);">
+          <div class="metric-label" style="color: #38bdf8;" id="heroFlowTitleLabel">Tổng dòng tiền (Gốc + Lãi)</div>
+          <div class="metric-value-large mono" style="color: #38bdf8;" id="heroCurrentFlow">4,07 Tỷ</div>
+          <div class="metric-sub mono" id="heroNetGrowth">+0 ₫ (0,00%)</div>
+        </div>
+      </div>
+
+      <!-- DÒNG TIỀN SINH LỜI MỖI NGÀY / THÁNG / NĂM -->
+      <div class="profit-flow-panel">
+        <div class="profit-flow-header">
+          <span>⚡ Dòng tiền sinh lời tự động (Lãi tiết kiệm & Cổ tức)</span>
+          <span class="mono" id="heroAvgYieldBadge" style="color:#34d399;">TB: 0%/năm</span>
+        </div>
+        <div class="profit-flow-grid">
+          <div class="profit-pill">
+            <div class="profit-pill-lbl">Mỗi ngày</div>
+            <div class="profit-pill-val mono" id="heroDailyGain">+0 ₫</div>
+            <div class="profit-pill-sub mono" id="heroDailySub">/ ngày</div>
+          </div>
+          <div class="profit-pill">
+            <div class="profit-pill-lbl">Mỗi tháng</div>
+            <div class="profit-pill-val mono" id="heroMonthlyGain">+0 Tr</div>
+            <div class="profit-pill-sub mono" id="heroMonthlySub">~30 ngày</div>
+          </div>
+          <div class="profit-pill highlight-year">
+            <div class="profit-pill-lbl" style="color:#a7f3d0;">Mỗi năm (365 ngày)</div>
+            <div class="profit-pill-val mono" id="heroYearlyGain" style="font-size:13px; color:#6ee7b7;">+0 Tr/năm</div>
+            <div class="profit-pill-sub mono" id="heroYearlyVND" style="color:#a7f3d0;">+0 ₫</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- KHUYẾN NGHỊ PHÂN BỔ TÀI SẢN THEO CHUẨN TÀI CHÍNH -->
+    <div class="recommendation-box" id="financialRecommendationBox">
+      <div style="font-weight: 800; color: #60a5fa; display:flex; align-items:center; gap:5px; margin-bottom:4px;">
+        <span>💡</span> <span>Khuyến nghị phân bổ chuẩn tài chính & Đánh giá thực tế</span>
+      </div>
+      <div id="recommendationContent" style="color: #cbd5e1; font-size:11px;"></div>
+    </div>
+
+    <!-- DONUT CHART PHÂN BỔ -->
+    <div class="section-card">
+      <div class="section-header">
+        <div class="section-title"><span>🍩</span> <span>Phân Bổ Tỷ Trọng Nhóm Tài Sản</span></div>
+        <span style="font-size: 10px; color: #38bdf8; font-weight: 700; cursor:pointer;" onclick="clearGroupFilter()">Xem tất cả</span>
+      </div>
+      <div class="chart-layout">
+        <div class="donut-wrap">
+          <svg id="groupDonutSvg" width="130" height="130" viewBox="0 0 130 130"></svg>
+          <div class="donut-center-info">
+            <span class="donut-center-lbl" style="font-size:9px; color:var(--text-muted);">TỔNG DÒNG TIỀN</span>
+            <span class="donut-center-val mono" id="donutCenterValue" style="font-size:13px; font-weight:800; color:#fff;">100%</span>
+          </div>
+        </div>
+        <div class="chart-legend" id="groupLegendContainer"></div>
+      </div>
+    </div>
+
+    <!-- CẤU TRÚC THÁP TÀI SẢN 5 TẦNG (CHUẨN HÌNH THÁP) -->
+    <div class="section-card">
+      <div class="section-header">
+        <div class="section-title"><span>🔺</span> <span>Cấu Trúc Tháp Tài Sản (5 Tầng Hình Tháp)</span></div>
+        <span style="font-size: 10px; color: #38bdf8; cursor:pointer; font-weight:700;" onclick="clearAllFilters()">Chạm tầng để lọc • Hiện tất cả</span>
+      </div>
+      <div class="pyramid-wrapper">
+        <div class="pyramid-roof-cap" title="Đỉnh Tháp Tài Sản"></div>
+        <div class="pyramid-stack" id="pyramidContainer"></div>
+      </div>
+    </div>
+
+    <!-- BẢNG LỘ TRÌNH CÁC NĂM TỰ ĐỘNG (ĐÃ SỬA FORMAT CHUẨN) -->
+    <div class="section-card">
+      <div class="section-header">
+        <div class="section-title"><span>📊</span> <span>Lộ Trình Dòng Tiền Theo Năm (Tự Động)</span></div>
+        <span style="font-size: 10px; color: var(--text-muted);">Chạm dòng để chuyển năm</span>
+      </div>
+      <div class="year-table-wrap">
+        <table class="year-table mono">
+          <thead>
+            <tr>
+              <th>Năm</th>
+              <th>SL</th>
+              <th>Tổng Vốn Gốc</th>
+              <th>Lãi Sinh Lời/Năm</th>
+              <th>Tổng Dòng Tiền</th>
+              <th>Lãi Lũy Kế</th>
+            </tr>
+          </thead>
+          <tbody id="yearlyTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- DANH MỤC TÀI SẢN CHI TIẾT -->
+    <div class="section-header" style="margin-bottom: 8px;">
+      <div class="section-title" style="font-size: 13px;"><span>📋</span> <span id="listSectionHeading">Danh Mục Tài Sản Chi Tiết</span></div>
+      <span style="font-size: 11px; color: var(--text-muted);" id="calcModeHintText">Đang tính lãi theo ngày thực gửi</span>
+    </div>
+    <div id="assetListContainer"></div>
+
+  </div>
+
+  <!-- FIXED BOTTOM BAR -->
+  <div class="bottom-bar">
+    <div>
+      <div style="font-size:10px; color:var(--text-muted);">Tổng dòng tiền (<span id="bottomYearLbl">2026</span>) • <span id="bottomYearlyProfitLbl" style="color:#34d399;">+267 Tr/năm</span></div>
+      <div class="mono" style="font-size:15px; font-weight:800; color:#38bdf8;" id="bottomBarNetTotal">4,07 Tỷ ₫</div>
+    </div>
+    <button class="add-action-btn" onclick="openAddModalSelectType()">
+      <svg width="17" height="17" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+      <span>Thêm tài sản</span>
+    </button>
+  </div>
+
+  <!-- MODAL CHỌN LOẠI TÀI SẢN ĐỂ THÊM MỚI -->
+  <div id="modalSelectType" class="modal-overlay" onclick="closeModalOnBackdrop(event, 'modalSelectType')">
+    <div class="modal-sheet">
+      <div class="modal-header">
+        <span class="modal-title">Chọn loại tài sản muốn thêm</span>
+        <button style="background:none; border:none; color:#94a3b8; font-size:18px; cursor:pointer;" onclick="closeModal('modalSelectType')">✕</button>
+      </div>
+      <p style="font-size:11px; color:var(--text-muted); margin-bottom:12px;">Mỗi loại tài sản sẽ có biểu mẫu nhập liệu và công thức tính dòng tiền chuyên biệt:</p>
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+        <button onclick="openAddForm('savings')" style="background:#172033; border:1px solid rgba(59,130,246,0.3); border-radius:15px; padding:14px; text-align:left; color:#fff; cursor:pointer;">
+          <div style="font-size:22px; margin-bottom:5px;">🏦</div>
+          <div style="font-weight:800; font-size:13px; color:#60a5fa;">Sổ tiết kiệm</div>
+          <div style="font-size:10px; color:#94a3b8; margin-top:2px;">Nhập tiền gốc, kỳ hạn, lãi suất %/năm, ngày gửi & ngày đáo hạn</div>
+        </button>
+        <button onclick="openAddForm('gold')" style="background:#172033; border:1px solid rgba(245,158,11,0.3); border-radius:15px; padding:14px; text-align:left; color:#fff; cursor:pointer;">
+          <div style="font-size:22px; margin-bottom:5px;">🪙</div>
+          <div style="font-weight:800; font-size:13px; color:#fbbf24;">Vàng tích sản</div>
+          <div style="font-size:10px; color:#94a3b8; margin-top:2px;">Nhập số chỉ/lượng, thương hiệu vàng, giá mua & giá thị trường</div>
+        </button>
+        <button onclick="openAddForm('stock')" style="background:#172033; border:1px solid rgba(16,185,129,0.3); border-radius:15px; padding:14px; text-align:left; color:#fff; cursor:pointer;">
+          <div style="font-size:22px; margin-bottom:5px;">📈</div>
+          <div style="font-weight:800; font-size:13px; color:#34d399;">Cổ phiếu / CCQ</div>
+          <div style="font-size:10px; color:#94a3b8; margin-top:2px;">Nhập mã CP/Quỹ, số lượng, giá vốn, thị giá & tỷ suất cổ tức</div>
+        </button>
+        <button onclick="openAddForm('other')" style="background:#172033; border:1px solid rgba(244,63,94,0.3); border-radius:15px; padding:14px; text-align:left; color:#fff; cursor:pointer;">
+          <div style="font-size:22px; margin-bottom:5px;">💰</div>
+          <div style="font-weight:800; font-size:13px; color:#fb7185;">Phường / Vay / BĐS</div>
+          <div style="font-size:10px; color:#94a3b8; margin-top:2px;">Nhập tiền Phường/Họ, cho vay cá nhân, BĐS hoặc quỹ dự phòng</div>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL FORM ĐIỀN THÔNG TIN (ĐƯỢC TÙY CHỈNH RIÊNG THEO TỪNG LOẠI TÀI SẢN) -->
+  <div id="modalFormDynamic" class="modal-overlay" onclick="closeModalOnBackdrop(event, 'modalFormDynamic')">
+    <div class="modal-sheet">
+      <div class="modal-header">
+        <span class="modal-title" id="formModalTitle">Thêm tài sản</span>
+        <button style="background:none; border:none; color:#94a3b8; font-size:18px; cursor:pointer;" onclick="closeModal('modalFormDynamic')">✕</button>
+      </div>
+
+      <!-- Thanh chuyển đổi nhanh loại tài sản ngay trong cửa sổ -->
+      <div class="type-switcher-bar" id="modalTypeSwitcherBar">
+        <button type="button" class="type-tab-btn" id="tabType_savings" onclick="switchModalAssetType('savings')">
+          <span>🏦</span><span>Tiết kiệm</span>
+        </button>
+        <button type="button" class="type-tab-btn" id="tabType_gold" onclick="switchModalAssetType('gold')">
+          <span>🪙</span><span>Vàng</span>
+        </button>
+        <button type="button" class="type-tab-btn" id="tabType_stock" onclick="switchModalAssetType('stock')">
+          <span>📈</span><span>Cổ phiếu/CCQ</span>
+        </button>
+        <button type="button" class="type-tab-btn" id="tabType_other" onclick="switchModalAssetType('other')">
+          <span>💰</span><span>Phường/Khác</span>
+        </button>
+      </div>
+
+      <form id="dynamicAssetForm" onsubmit="handleFormSubmit(event)">
+        <input type="hidden" id="formEditId" />
+        <input type="hidden" id="formAssetType" />
+        <div id="formFieldsContainer"></div>
+        <div id="formLivePreviewBox" class="preview-calc-box mono"></div>
+        <button type="submit" class="btn-submit" id="formSubmitBtn">Lưu tài sản</button>
+        <button type="button" id="formDeleteBtn" onclick="handleFormDelete()" style="width:100%; background:rgba(244,63,94,0.15); color:#fb7185; border:1px solid rgba(244,63,94,0.3); border-radius:13px; padding:11px; font-size:13px; font-weight:700; cursor:pointer; margin-top:8px; display:none;">🗑️ Xóa tài sản này</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL XÁC NHẬN KHÔI PHỤC DỮ LIỆU GỐC (KHÔNG DÙNG CONFIRM/ALERT) -->
+  <div id="modalResetConfirm" class="modal-overlay" onclick="closeModalOnBackdrop(event, 'modalResetConfirm')">
+    <div class="modal-sheet" style="max-width:420px;">
+      <div class="modal-header">
+        <span class="modal-title">Khôi phục dữ liệu gốc 2026?</span>
+        <button style="background:none; border:none; color:#94a3b8; font-size:18px; cursor:pointer;" onclick="closeModal('modalResetConfirm')">✕</button>
+      </div>
+      <p style="font-size:12px; color:#cbd5e1; margin-bottom:16px;">
+        Ứng dụng sẽ khôi phục lại đúng 12 khoản mục gốc chuẩn ban đầu (SHB1-SHB7, Seabank1-Seabank3, Phường, Tiền cho vay). Các thay đổi thủ công sẽ được đặt lại.
+      </p>
+      <div class="grid-2">
+        <button type="button" onclick="closeModal('modalResetConfirm')" style="background:#1e293b; color:#cbd5e1; border:none; border-radius:12px; padding:11px; font-weight:700; cursor:pointer;">Hủy bỏ</button>
+        <button type="button" onclick="confirmResetToInitial2026()" style="background:#f43f5e; color:#fff; border:none; border-radius:12px; padding:11px; font-weight:700; cursor:pointer;">Đồng ý khôi phục</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const GITHUB_GOLD_JSON_URL = 'https://raw.githubusercontent.com/chuongnv2015/gold_price/main/gold-prices.json';
+
+    // Lấy ngày hiện tại thực tế theo múi giờ máy đang chạy (YYYY-MM-DD)
+    function getTodayISOString() {
+      const now = new Date();
+      const y = now.getFullYear();
+      const m = String(now.getMonth() + 1).padStart(2, '0');
+      const d = String(now.getDate()).padStart(2, '0');
+      return `${y}-${m}-${d}`;
+    }
+
+    // DỮ LIỆU CHUẨN 12 KHOẢN MỤC BAN ĐẦU
+    const INITIAL_STATE = {
+      referenceDate: getTodayISOString(),
+      selectedYear: new Date().getFullYear(),
+      interestCalcMode: 'accrued', // Mặc định luôn tính dòng tiền lũy kế đến ngày hiện tại chạy file
+      goldPrices: {
+        'Vàng nguyên liệu 999,9': 8450000,
+        'Vàng miếng SJC (Cty CP BTMH)': 8700000,
+        'Vàng 99,9': 8450000,
+        'Vàng Bảo Tín Mạnh Hải': 8580000,
+        'Vàng Bảo Tín Minh Châu': 8600000,
+        'Vàng SJC 9999': 8700000
+      },
+      goldLastSync: '',
+      assets: [
+        { id: 'r1', type: 'other', subType: 'Phường / Họ', name: 'Phường', category: 'Phường & Cho vay dự phòng', tier: 'tier1', principalVND: 150000000, rateNum: 0, startDate: '2026-10-28', maturityDate: '2027-10-28', holdUntilYear: 2027, manualDeltaVND: 0 },
+        { id: 'r2', type: 'other', subType: 'Cho vay cá nhân', name: 'Tiền cho vay', category: 'Phường & Cho vay dự phòng', tier: 'tier1', principalVND: 170000000, rateNum: 0, startDate: '2026-10-28', maturityDate: '2027-10-28', holdUntilYear: 2027, manualDeltaVND: 0 },
+
+        // SHB 1-7
+        { id: 's7', type: 'savings', termMonths: 12, name: 'SHB7', category: 'Ngân hàng SHB', tier: 'tier2', principalVND: 300000000, rateNum: 8.8, startDate: '2026-07-25', maturityDate: '2027-07-25', holdUntilYear: 2027, manualDeltaVND: 0 },
+        { id: 's6', type: 'savings', termMonths: 12, name: 'SHB6', category: 'Ngân hàng SHB', tier: 'tier2', principalVND: 100000000, rateNum: 8.1, startDate: '2026-01-02', maturityDate: '2027-01-02', holdUntilYear: 2027, manualDeltaVND: 0 },
+        { id: 's5', type: 'savings', termMonths: 12, name: 'SHB5', category: 'Ngân hàng SHB', tier: 'tier2', principalVND: 550000000, rateNum: 8.0, startDate: '2026-03-09', maturityDate: '2027-03-09', holdUntilYear: 2027, manualDeltaVND: 0 },
+        { id: 's4', type: 'savings', termMonths: 12, name: 'SHB4', category: 'Ngân hàng SHB', tier: 'tier2', principalVND: 310000000, rateNum: 7.9, startDate: '2026-01-17', maturityDate: '2027-01-17', holdUntilYear: 2027, manualDeltaVND: 0 },
+        { id: 's3b', type: 'savings', termMonths: 12, name: 'SHB3', category: 'Ngân hàng SHB', tier: 'tier2', principalVND: 350000000, rateNum: 9.1, startDate: '2026-09-06', maturityDate: '2027-09-06', holdUntilYear: 2027, manualDeltaVND: 0 },
+        { id: 's2', type: 'savings', termMonths: 12, name: 'SHB2', category: 'Ngân hàng SHB', tier: 'tier2', principalVND: 800000000, rateNum: 9.1, startDate: '2026-08-13', maturityDate: '2027-08-13', holdUntilYear: 2027, manualDeltaVND: 0 },
+        { id: 's1', type: 'savings', termMonths: 12, name: 'SHB1', category: 'Ngân hàng SHB', tier: 'tier2', principalVND: 430000000, rateNum: 9.1, startDate: '2026-08-28', maturityDate: '2027-08-28', holdUntilYear: 2027, manualDeltaVND: 0 },
+
+        // Seabank 1-3
+        { id: 'sb3', type: 'savings', termMonths: 12, name: 'Seabank3', category: 'Ngân hàng Seabank', tier: 'tier2', principalVND: 150000000, rateNum: 7.9, startDate: '2025-12-04', maturityDate: '2026-12-04', holdUntilYear: 2026, manualDeltaVND: 0 },
+        { id: 'sb2', type: 'savings', termMonths: 12, name: 'Seabank2', category: 'Ngân hàng Seabank', tier: 'tier2', principalVND: 100000000, rateNum: 7.9, startDate: '2026-02-23', maturityDate: '2027-02-23', holdUntilYear: 2027, manualDeltaVND: 0 },
+        { id: 'sb1', type: 'savings', termMonths: 12, name: 'Seabank1', category: 'Ngân hàng Seabank', tier: 'tier2', principalVND: 450000000, rateNum: 6.9, startDate: '2025-12-13', maturityDate: '2026-12-13', holdUntilYear: 2026, manualDeltaVND: 0 }
+      ]
+    };
+
+    const STORAGE_KEY = 'THAP_TS_PRO_V2_EXACT';
+    let appData = loadAppData();
+    let currentTierFilter = 'all';
+    let currentGroupFilter = 'all';
+
+    function loadAppData() {
+      const todayStr = getTodayISOString();
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) {
+          const fresh = JSON.parse(JSON.stringify(INITIAL_STATE));
+          fresh.referenceDate = todayStr;
+          fresh.interestCalcMode = 'accrued';
+          return fresh;
+        }
+        const parsed = JSON.parse(raw);
+        const merged = Object.assign(JSON.parse(JSON.stringify(INITIAL_STATE)), parsed);
+        // Luôn cập nhật Ngày chốt tính lãi hiện tại là ngày thực tế khi mở chạy file
+        merged.referenceDate = todayStr;
+        // Luôn mặc định chế độ tính dòng tiền đến ngày hiện tại (accrued) khi mở file
+        merged.interestCalcMode = 'accrued';
+        merged.goldPrices = Object.assign({}, INITIAL_STATE.goldPrices, parsed.goldPrices || {});
+        return merged;
+      } catch (e) {
+        const fallback = JSON.parse(JSON.stringify(INITIAL_STATE));
+        fallback.referenceDate = todayStr;
+        fallback.interestCalcMode = 'accrued';
+        return fallback;
+      }
+    }
+
+    function saveAppData() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
+    }
+
+    // Chuẩn hóa giá vàng từ chuỗi hoặc số về đơn vị VNĐ / 1 Chỉ
+    function normalizeGoldPriceToPerChi(rawVal) {
+      if (rawVal === undefined || rawVal === null) return 0;
+      let num = 0;
+      if (typeof rawVal === 'number') {
+        num = rawVal;
+      } else {
+        const s = String(rawVal).trim();
+        if (!s) return 0;
+        const digitsOnly = s.replace(/[^0-9]/g, '');
+        if (!digitsOnly) return 0;
+        num = parseFloat(digitsOnly);
+      }
+      if (!num || isNaN(num) || num <= 0) return 0;
+
+      // Quy đổi tự động về đơn vị VNĐ / 1 Chỉ (thường nằm trong khoảng 5.000.000 - 30.000.000 đ/chỉ)
+      if (num >= 40000000 && num <= 350000000) {
+        // Giá đang tính theo Lượng (Cây) -> chia 10 ra Chỉ
+        return Math.round(num / 10);
+      }
+      if (num >= 40000 && num < 400000) {
+        // Giá đang tính theo Nghìn đồng / Lượng (VD: 87000) -> nhân 100 ra VNĐ/Chỉ
+        return Math.round(num * 100);
+      }
+      if (num >= 4000 && num < 40000) {
+        // Giá đang tính theo Nghìn đồng / Chỉ (VD: 8580) -> nhân 1000 ra VNĐ/Chỉ
+        return Math.round(num * 1000);
+      }
+      return Math.round(num);
+    }
+
+    // Trích xuất giá mua vào từ 1 object hoặc mảng trong JSON GitHub
+    function extractBuyPriceFromEntry(entry) {
+      if (entry === null || entry === undefined) return 0;
+      if (typeof entry === 'number' || typeof entry === 'string') {
+        return normalizeGoldPriceToPerChi(entry);
+      }
+      if (typeof entry === 'object') {
+        const buyKeys = [
+          'buy', 'buyPrice', 'buy_price', 'mua', 'muaVao', 'mua_vao', 'giaMua', 'gia_mua',
+          'Mua', 'Mua vào', 'Giá mua', 'Giá mua vào', 'buy_vnd', 'price_buy', 'bid'
+        ];
+        for (const k of buyKeys) {
+          if (entry[k] !== undefined && entry[k] !== null && entry[k] !== '') {
+            const p = normalizeGoldPriceToPerChi(entry[k]);
+            if (p > 0) return p;
+          }
+        }
+        // Tìm bất kỳ key nào có chữ 'mua' hoặc 'buy'
+        for (const [k, v] of Object.entries(entry)) {
+          const kl = k.toLowerCase();
+          if ((kl.includes('mua') || kl.includes('buy')) && (typeof v === 'number' || typeof v === 'string')) {
+            const p = normalizeGoldPriceToPerChi(v);
+            if (p > 0) return p;
+          }
+        }
+      }
+      return 0;
+    }
+
+    // Duyệt đệ quy toàn bộ cấu trúc JSON để tìm "Vàng nguyên liệu 999,9" và "Vàng miếng SJC (Cty CP BTMH)"
+    function parseGoldJsonPayload(data) {
+      let price9999 = 0;
+      let priceSjcBtmh = 0;
+
+      function matchTypeLabel(label) {
+        if (!label) return null;
+        const norm = String(label).toLowerCase().trim();
+        if (norm.includes('vàng nguyên liệu 999,9') || norm.includes('vang nguyen lieu 999,9') || norm.includes('nguyên liệu 999,9') || norm.includes('nguyên liệu 999.9')) {
+          return '9999';
+        }
+        if (norm.includes('vàng miếng sjc (cty cp btmh)') || norm.includes('vang mieng sjc (cty cp btmh)') || (norm.includes('vàng miếng sjc') && norm.includes('btmh'))) {
+          return 'SJC_BTMH';
+        }
+        return null;
+      }
+
+      function walk(node) {
+        if (!node) return;
+        if (Array.isArray(node)) {
+          node.forEach(walk);
+          return;
+        }
+        if (typeof node === 'object') {
+          // Trường hợp 1: Object có thuộc tính tên loại vàng (name, type, brand, title, loai, ten...)
+          const nameFields = ['name', 'type', 'title', 'brand', 'gold_type', 'loai', 'loai_vang', 'ten', 'item', 'product', 'label', 'category'];
+          for (const nf of nameFields) {
+            if (node[nf] && typeof node[nf] === 'string') {
+              const matched = matchTypeLabel(node[nf]);
+              if (matched === '9999' && !price9999) {
+                const p = extractBuyPriceFromEntry(node);
+                if (p > 0) price9999 = p;
+              } else if (matched === 'SJC_BTMH' && !priceSjcBtmh) {
+                const p = extractBuyPriceFromEntry(node);
+                if (p > 0) priceSjcBtmh = p;
+              }
+            }
+          }
+
+          // Kiểm tra tất cả giá trị string trong object xem có khớp tên loại vàng không
+          for (const val of Object.values(node)) {
+            if (typeof val === 'string') {
+              const matched = matchTypeLabel(val);
+              if (matched === '9999' && !price9999) {
+                const p = extractBuyPriceFromEntry(node);
+                if (p > 0) price9999 = p;
+              } else if (matched === 'SJC_BTMH' && !priceSjcBtmh) {
+                const p = extractBuyPriceFromEntry(node);
+                if (p > 0) priceSjcBtmh = p;
+              }
+            }
+          }
+
+          // Trường hợp 2: Key của object chính là tên loại vàng
+          for (const [k, v] of Object.entries(node)) {
+            const matched = matchTypeLabel(k);
+            if (matched === '9999' && !price9999) {
+              const p = extractBuyPriceFromEntry(v);
+              if (p > 0) price9999 = p;
+            } else if (matched === 'SJC_BTMH' && !priceSjcBtmh) {
+              const p = extractBuyPriceFromEntry(v);
+              if (p > 0) priceSjcBtmh = p;
+            }
+            if (typeof v === 'object' && v !== null) {
+              walk(v);
+            }
+          }
+        }
+      }
+
+      walk(data);
+      return { price9999, priceSjcBtmh };
+    }
+
+    function updateGoldSyncStatusBar() {
+      const el = document.getElementById('liveGoldPriceSummary');
+      if (!el) return;
+      const p9999 = appData.goldPrices['Vàng nguyên liệu 999,9'];
+      const pSjc = appData.goldPrices['Vàng miếng SJC (Cty CP BTMH)'];
+      el.textContent = `999,9: ${fmtTr(p9999 / 1000000)}Tr/chỉ • SJC BTMH: ${fmtTr(pSjc / 1000000)}Tr/chỉ`;
+    }
+
+    async function fetchLiveGoldPrices(showNotification = false) {
+      const statusEl = document.getElementById('liveGoldPriceSummary');
+      if (statusEl && showNotification) {
+        statusEl.textContent = 'Đang đồng bộ từ GitHub...';
+      }
+      try {
+        const res = await fetch(`${GITHUB_GOLD_JSON_URL}?t=${Date.now()}`, { cache: 'no-store' });
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const jsonData = await res.json();
+        const { price9999, priceSjcBtmh } = parseGoldJsonPayload(jsonData);
+
+        let updatedAny = false;
+        if (price9999 > 0) {
+          appData.goldPrices['Vàng nguyên liệu 999,9'] = price9999;
+          appData.goldPrices['Vàng 99,9'] = price9999;
+          updatedAny = true;
+        }
+        if (priceSjcBtmh > 0) {
+          appData.goldPrices['Vàng miếng SJC (Cty CP BTMH)'] = priceSjcBtmh;
+          appData.goldPrices['Vàng Bảo Tín Mạnh Hải'] = priceSjcBtmh;
+          appData.goldPrices['Vàng SJC 9999'] = priceSjcBtmh;
+          updatedAny = true;
+        }
+
+        // Tự động cập nhật thị giá hiện tại cho tất cả các tài sản vàng đang nắm giữ để tính lãi/lỗ tức thì
+        if (updatedAny) {
+          appData.assets.forEach(item => {
+            if (item.type === 'gold') {
+              const latestMarketP = resolveLiveGoldMarketPrice(item.name);
+              if (latestMarketP > 0) {
+                item.marketPrice = latestMarketP;
+              }
+            }
+          });
+          appData.goldLastSync = new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+          saveAppData();
+          renderAll();
+
+          // Nếu đang mở form thêm mới tài sản vàng thì tự động điền giá mới nhất
+          const modalForm = document.getElementById('modalFormDynamic');
+          const curType = document.getElementById('formAssetType')?.value;
+          const isEditing = Boolean(document.getElementById('formEditId')?.value);
+          if (modalForm && modalForm.classList.contains('active') && curType === 'gold') {
+            const selectedBrand = document.getElementById('dynName')?.value || 'Vàng nguyên liệu 999,9';
+            const liveP = resolveLiveGoldMarketPrice(selectedBrand);
+            if (liveP > 0) {
+              const mktInput = document.getElementById('dynMarketPrice');
+              if (mktInput) mktInput.value = liveP;
+              if (!isEditing) {
+                const buyInput = document.getElementById('dynBuyPrice');
+                if (buyInput) buyInput.value = liveP;
+              }
+              updateLiveFormPreview();
+            }
+          }
+
+          if (showNotification) {
+            showToast('Đã cập nhật giá vàng mới nhất từ GitHub!');
+          }
+        } else if (showNotification) {
+          showToast('Đã kết nối GitHub nhưng không tìm thấy mục giá thay đổi');
+        }
+      } catch (err) {
+        console.warn('Không thể tải giá vàng từ GitHub:', err);
+        if (showNotification) {
+          showToast('Không thể kết nối GitHub, đang dùng giá lưu gần nhất');
+        }
+      } finally {
+        updateGoldSyncStatusBar();
+      }
+    }
+
+    function resolveLiveGoldMarketPrice(brandName) {
+      if (!brandName) return appData.goldPrices['Vàng nguyên liệu 999,9'] || 8450000;
+      if (appData.goldPrices[brandName]) return appData.goldPrices[brandName];
+      const norm = brandName.toLowerCase();
+      if (norm.includes('999,9') || norm.includes('99,9') || norm.includes('nguyên liệu')) {
+        return appData.goldPrices['Vàng nguyên liệu 999,9'] || appData.goldPrices['Vàng 99,9'] || 8450000;
+      }
+      if (norm.includes('sjc') || norm.includes('btmh') || norm.includes('mạnh hải')) {
+        return appData.goldPrices['Vàng miếng SJC (Cty CP BTMH)'] || appData.goldPrices['Vàng Bảo Tín Mạnh Hải'] || 8700000;
+      }
+      return appData.goldPrices['Vàng nguyên liệu 999,9'] || 8500000;
+    }
+
+    // ĐỊNH NGHĨA ĐẦY ĐỦ OPENMODAL & CLOSEMODAL
+    function openModal(id) {
+      const el = document.getElementById(id);
+      if (el) el.classList.add('active');
+    }
+
+    function closeModal(id) {
+      const el = document.getElementById(id);
+      if (el) el.classList.remove('active');
+    }
+
+    function closeModalOnBackdrop(e, id) {
+      if (e.target && e.target.id === id) closeModal(id);
+    }
+
+    function openResetConfirmModal() {
+      openModal('modalResetConfirm');
+    }
+
+    function confirmResetToInitial2026() {
+      const savedGoldPrices = Object.assign({}, appData.goldPrices);
+      appData = JSON.parse(JSON.stringify(INITIAL_STATE));
+      appData.referenceDate = getTodayISOString();
+      appData.interestCalcMode = 'accrued';
+      appData.goldPrices = savedGoldPrices;
+      currentTierFilter = 'all';
+      currentGroupFilter = 'all';
+      saveAppData();
+      closeModal('modalResetConfirm');
+      renderAll();
+      showToast('Đã khôi phục dữ liệu gốc chuẩn!');
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2300);
+    }
+
+    const fmtVND = (n) => new Intl.NumberFormat('vi-VN').format(Math.round(n || 0)) + ' ₫';
+    const fmtTr = (n) => {
+      const val = Number(n) || 0;
+      return (Math.round(val * 100) % 100 === 0 ? val.toFixed(0) : val.toFixed(2)).replace('.', ',');
+    };
+    const fmtDateVN = (isoStr) => {
+      if (!isoStr || !isoStr.includes('-')) return isoStr || '';
+      const [y, m, d] = isoStr.split('-');
+      return `${d}/${m}/${y}`;
+    };
+
+    function daysBetween(d1Str, d2Str) {
+      if (!d1Str || !d2Str) return 0;
+      const d1 = new Date(d1Str + 'T00:00:00');
+      const d2 = new Date(d2Str + 'T00:00:00');
+      return Math.round((d2 - d1) / (1000 * 60 * 60 * 24));
+    }
+
+    function addMonthsToDate(isoDate, months) {
+      if (!isoDate) return '2027-10-28';
+      const [y, m, d] = isoDate.split('-').map(Number);
+      const dt = new Date(y, m - 1 + Number(months), d);
+      const yy = dt.getFullYear();
+      const mm = String(dt.getMonth() + 1).padStart(2, '0');
+      const dd = String(dt.getDate()).padStart(2, '0');
+      return `${yy}-${mm}-${dd}`;
+    }
+
+    function getActiveYearsList() {
+      let maxYear = 2027;
+      appData.assets.forEach(a => {
+        const hy = Number(a.holdUntilYear) || 2026;
+        if (hy > maxYear) maxYear = hy;
+      });
+      const years = [];
+      for (let y = 2026; y <= maxYear; y++) {
+        years.push(y);
+      }
+      return years;
+    }
+
+    function setInterestCalcMode(mode) {
+      appData.interestCalcMode = mode;
+      saveAppData();
+      renderAll();
+      showToast(mode === 'accrued' ? 'Đang tính dòng tiền lũy kế đến ngày hiện tại' : 'Đang xem dự phóng trọn kỳ đáo hạn');
+    }
+
+    function setRefDateToToday() {
+      const today = getTodayISOString();
+      appData.referenceDate = today;
+      appData.interestCalcMode = 'accrued';
+      saveAppData();
+      renderAll();
+      showToast(`Đã đặt về ngày hôm nay: ${fmtDateVN(today)}`);
+    }
+
+    /**
+     * CÔNG THỨC TÍNH DÒNG TIỀN ĐẾN NGÀY HIỆN TẠI CHẠY FILE:
+     * - Sổ tiết kiệm & Tài sản có lãi suất:
+     *   + Tính chính xác số ngày thực gửi từ ngày mở sổ (startDate) đến ngày chốt hiện tại (referenceDate).
+     *   + Dòng tiền hiện tại = Tiền gốc + Lãi lũy kế đến ngày hiện tại (Gốc * Lãi suất%/năm * Số ngày thực gửi / 365).
+     * - Vàng tích sản:
+     *   + Tự động lấy giá mua vào mới nhất từ GitHub JSON (Vàng nguyên liệu 999,9 hoặc Vàng miếng SJC (Cty CP BTMH)) để tính giá trị hiện tại và Lãi/Lỗ.
+     */
+    function computeAssetMetrics(item, targetYear) {
+      const startYear = Number(item.startDate ? item.startDate.split('-')[0] : 2026);
+      const holdUntil = Number(item.holdUntilYear) || targetYear;
+
+      const effectiveStartYear = Math.min(startYear, 2026);
+      if (targetYear < effectiveStartYear || targetYear > holdUntil) {
+        return {
+          isHeld: false,
+          principalVND: 0,
+          deltaVND: 0,
+          currentFlowVND: 0,
+          dailyGainVND: 0,
+          yearlyGainVND: 0,
+          accruedInterestVND: 0,
+          fullTermInterestVND: 0,
+          elapsedDays: 0,
+          totalTermDays: 365,
+          daysRemaining: 0
+        };
+      }
+
+      const principalVND = Number(item.principalVND) || 0;
+      const rate = Number(item.rateNum) || 0;
+
+      // 1. VÀNG TÍCH SẢN (Tự động ưu tiên giá mua vào cập nhật từ GitHub JSON để tính lãi/lỗ hiện tại)
+      if (item.type === 'gold') {
+        const qty = Number(item.qty) || 0;
+        const livePrice = resolveLiveGoldMarketPrice(item.name);
+        const marketPrice = livePrice || Number(item.marketPrice) || Number(item.buyPrice) || 8500000;
+        const currentVal = qty * marketPrice;
+        const delta = currentVal - principalVND + (Number(item.manualDeltaVND) || 0);
+        return {
+          isHeld: true,
+          principalVND,
+          deltaVND: delta,
+          currentFlowVND: principalVND + delta,
+          dailyGainVND: 0,
+          yearlyGainVND: 0,
+          accruedInterestVND: delta,
+          fullTermInterestVND: delta,
+          elapsedDays: 0,
+          totalTermDays: 0,
+          daysRemaining: 999,
+          activeMarketPrice: marketPrice
+        };
+      }
+
+      // 2. CỔ PHIẾU / CHỨNG CHỈ QUỸ
+      if (item.type === 'stock') {
+        const qty = Number(item.qty) || 0;
+        const buyPrice = Number(item.buyPrice) || 0;
+        const marketPrice = Number(item.marketPrice) || buyPrice;
+        const capitalGain = qty * (marketPrice - buyPrice);
+        const yearlyDividendVND = principalVND * (rate / 100);
+        const dailyDividendVND = yearlyDividendVND / 365;
+
+        const refYear = Number(appData.referenceDate.split('-')[0]) || 2026;
+        const calcDateStr = targetYear > refYear ? `${targetYear}-12-31` : appData.referenceDate;
+        const elapsedDays = Math.max(0, daysBetween(item.startDate || '2026-01-01', calcDateStr));
+        const accruedDividend = dailyDividendVND * elapsedDays;
+
+        const activeDividend = appData.interestCalcMode === 'full_term' ? yearlyDividendVND : accruedDividend;
+        const totalDelta = capitalGain + activeDividend + (Number(item.manualDeltaVND) || 0);
+
+        return {
+          isHeld: true,
+          principalVND,
+          deltaVND: totalDelta,
+          currentFlowVND: principalVND + totalDelta,
+          dailyGainVND: dailyDividendVND,
+          yearlyGainVND: yearlyDividendVND,
+          accruedInterestVND: capitalGain + accruedDividend,
+          fullTermInterestVND: capitalGain + yearlyDividendVND,
+          elapsedDays,
+          totalTermDays: 365,
+          daysRemaining: 999
+        };
+      }
+
+      // 3. SỔ TIẾT KIỆM & TÀI SẢN CÓ LÃI SUẤT (MẶC ĐỊNH TÍNH DÒNG TIỀN ĐẾN NGÀY HIỆN TẠI CHẠY FILE)
+      const yearlyGainVND = rate > 0 ? principalVND * (rate / 100) : 0;
+      const dailyGainVND = yearlyGainVND / 365;
+
+      const startStr = item.startDate || '2026-01-01';
+      const matStr = item.maturityDate || addMonthsToDate(startStr, 12);
+      const totalTermDays = Math.max(1, daysBetween(startStr, matStr));
+
+      const refYear = Number(appData.referenceDate.split('-')[0]) || 2026;
+      const calcDateStr = targetYear > refYear ? `${targetYear}-12-31` : appData.referenceDate;
+
+      // Số ngày thực gửi tính từ ngày mở sổ đến ngày hiện tại (calcDateStr)
+      const rawElapsed = daysBetween(startStr, calcDateStr);
+      const elapsedDays = Math.min(totalTermDays, Math.max(0, rawElapsed));
+
+      // Lãi lũy kế đến ngày hiện tại chạy file
+      const accruedInterestVND = principalVND * (rate / 100) * (elapsedDays / 365);
+      // Lãi trọn kỳ đáo hạn
+      const fullTermInterestVND = principalVND * (rate / 100) * (totalTermDays / 365);
+
+      const chosenInterestVND = appData.interestCalcMode === 'full_term'
+        ? fullTermInterestVND
+        : accruedInterestVND;
+
+      const manualDelta = Number(item.manualDeltaVND) || 0;
+      const deltaVND = chosenInterestVND + manualDelta;
+      const currentFlowVND = principalVND + deltaVND;
+      const daysRemaining = daysBetween(appData.referenceDate, matStr);
+
+      return {
+        isHeld: true,
+        principalVND,
+        deltaVND,
+        currentFlowVND,
+        dailyGainVND,
+        yearlyGainVND,
+        accruedInterestVND,
+        fullTermInterestVND,
+        elapsedDays,
+        totalTermDays,
+        daysRemaining
+      };
+    }
+
+    function aggregatePortfolio(targetYear) {
+      let totalPrincipal = 0;
+      let totalCurrentFlow = 0;
+      let totalDelta = 0;
+      let totalDailyGain = 0;
+      let totalYearlyGain = 0;
+      let heldCount = 0;
+
+      const groupsMap = {};
+      const tierTotals = {
+        tier1: { principal: 0, currentFlow: 0, yearlyGain: 0, count: 0, name: 'Tầng 1: Nền móng & Dự phòng', desc: 'Thanh khoản cao, an toàn' },
+        tier2: { principal: 0, currentFlow: 0, yearlyGain: 0, count: 0, name: 'Tầng 2: Tiết kiệm & Vàng', desc: 'Tích lũy sinh lời cố định' },
+        tier3: { principal: 0, currentFlow: 0, yearlyGain: 0, count: 0, name: 'Tầng 3: Tài sản sinh lời', desc: 'BĐS, CCQ, Trái phiếu' },
+        tier4: { principal: 0, currentFlow: 0, yearlyGain: 0, count: 0, name: 'Tầng 4: Cổ phiếu tăng trưởng', desc: 'Cổ phiếu doanh nghiệp' },
+        tier5: { principal: 0, currentFlow: 0, yearlyGain: 0, count: 0, name: 'Tầng 5: Cơ hội & Đầu cơ', desc: 'Tài sản mạo hiểm / Phải thu' }
+      };
+
+      appData.assets.forEach(item => {
+        const m = computeAssetMetrics(item, targetYear);
+        if (!m.isHeld) return;
+
+        heldCount++;
+        totalPrincipal += m.principalVND;
+        totalCurrentFlow += m.currentFlowVND;
+        totalDelta += m.deltaVND;
+        totalDailyGain += m.dailyGainVND;
+        totalYearlyGain += m.yearlyGainVND;
+
+        const cat = (item.category || 'Nhóm khác').trim();
+        if (!groupsMap[cat]) {
+          groupsMap[cat] = { category: cat, principalVND: 0, currentFlowVND: 0, deltaVND: 0, dailyGainVND: 0, yearlyGainVND: 0, count: 0, items: [] };
+        }
+        groupsMap[cat].principalVND += m.principalVND;
+        groupsMap[cat].currentFlowVND += m.currentFlowVND;
+        groupsMap[cat].deltaVND += m.deltaVND;
+        groupsMap[cat].dailyGainVND += m.dailyGainVND;
+        groupsMap[cat].yearlyGainVND += m.yearlyGainVND;
+        groupsMap[cat].count += 1;
+        groupsMap[cat].items.push({ ...item, metrics: m });
+
+        if (tierTotals[item.tier]) {
+          tierTotals[item.tier].principal += m.principalVND;
+          tierTotals[item.tier].currentFlow += m.currentFlowVND;
+          tierTotals[item.tier].yearlyGain += m.yearlyGainVND;
+          tierTotals[item.tier].count += 1;
+        }
+      });
+
+      const groupsArray = Object.values(groupsMap).sort((a, b) => b.currentFlowVND - a.currentFlowVND);
+      const palette = ['#3b82f6', '#06b6d4', '#10b981', '#f59e0b', '#eab308', '#8b5cf6', '#f43f5e', '#14b8a6'];
+      groupsArray.forEach((g, idx) => {
+        g.color = palette[idx % palette.length];
+        g.percent = totalCurrentFlow > 0 ? (g.currentFlowVND / totalCurrentFlow) * 100 : 0;
+      });
+
+      return { year: targetYear, heldCount, totalPrincipal, totalCurrentFlow, totalDelta, totalDailyGain, totalYearlyGain, groupsArray, tierTotals };
+    }
+
+    // RENDER TOÀN BỘ GIAO DIỆN
+    function renderAll() {
+      const years = getActiveYearsList();
+      if (!years.includes(Number(appData.selectedYear))) {
+        appData.selectedYear = years[0];
+      }
+
+      document.getElementById('refDateInput').value = appData.referenceDate;
+      document.getElementById('btnModeAccrued').classList.toggle('active', appData.interestCalcMode === 'accrued');
+      document.getElementById('btnModeFullTerm').classList.toggle('active', appData.interestCalcMode === 'full_term');
+      document.getElementById('calcModeHintText').textContent = appData.interestCalcMode === 'accrued'
+        ? `Tính dòng tiền đến ngày hiện tại (${fmtDateVN(appData.referenceDate)})`
+        : 'Đang xem dự phóng trọn kỳ đáo hạn';
+
+      updateGoldSyncStatusBar();
+      renderDynamicYearTabs(years);
+
+      const sum = aggregatePortfolio(Number(appData.selectedYear));
+
+      const originTy = sum.totalPrincipal / 1000000000;
+      const flowTy = sum.totalCurrentFlow / 1000000000;
+      const pct = sum.totalPrincipal > 0 ? (sum.totalDelta / sum.totalPrincipal) * 100 : 0;
+      const avgYieldPct = sum.totalPrincipal > 0 ? (sum.totalYearlyGain / sum.totalPrincipal) * 100 : 0;
+      const sign = sum.totalDelta >= 0 ? '+' : '';
+
+      document.getElementById('lblActiveYearBadge').textContent = `Năm tài chính ${sum.year}`;
+      document.getElementById('lblTotalItemsCount').textContent = `${sum.heldCount} tài sản đang giữ`;
+      document.getElementById('bottomYearLbl').textContent = sum.year;
+
+      document.getElementById('heroOriginPrincipal').textContent = `${fmtTr(originTy)} Tỷ`;
+      document.getElementById('heroOriginVND').textContent = fmtVND(sum.totalPrincipal);
+
+      document.getElementById('heroFlowTitleLabel').textContent = appData.interestCalcMode === 'accrued'
+        ? `Dòng tiền đến ${fmtDateVN(appData.referenceDate)}`
+        : 'Tổng dòng tiền (Trọn kỳ)';
+      document.getElementById('heroCurrentFlow').textContent = `${fmtTr(flowTy)} Tỷ`;
+      const growthEl = document.getElementById('heroNetGrowth');
+      growthEl.textContent = `${sign}${fmtVND(sum.totalDelta)} (${sign}${pct.toFixed(2)}%)`;
+      growthEl.style.color = sum.totalDelta >= 0 ? '#34d399' : '#fb7185';
+
+      // Hiển thị Dòng tiền sinh lời Mỗi Ngày / Mỗi Tháng / Mỗi Năm
+      document.getElementById('heroAvgYieldBadge').textContent = `Tỷ suất TB: ${avgYieldPct.toFixed(2)}%/năm`;
+      document.getElementById('heroDailyGain').textContent = `+${fmtVND(sum.totalDailyGain)}`;
+      document.getElementById('heroMonthlyGain').textContent = `+${fmtTr((sum.totalDailyGain * 30) / 1000000)} Tr`;
+      document.getElementById('heroMonthlySub').textContent = `+${fmtVND(sum.totalDailyGain * 30)}/tháng`;
+      document.getElementById('heroYearlyGain').textContent = `+${fmtTr(sum.totalYearlyGain / 1000000)} Tr/năm`;
+      document.getElementById('heroYearlyVND').textContent = `+${fmtVND(sum.totalYearlyGain)}`;
+
+      document.getElementById('bottomBarNetTotal').textContent = `${fmtTr(flowTy)} Tỷ ₫`;
+      document.getElementById('bottomYearlyProfitLbl').textContent = `+${fmtTr(sum.totalDelta / 1000000)} Tr lũy kế`;
+
+      renderFinancialRecommendation(sum);
+      renderGroupDonutAndLegend(sum);
+      renderPyramid(sum);
+      renderAutoYearlyTable(years);
+      renderAssetsSection(sum);
+    }
+
+    function renderDynamicYearTabs(years) {
+      const container = document.getElementById('dynamicYearTabs');
+      container.innerHTML = years.map(y => `
+        <button class="year-chip ${Number(appData.selectedYear) === y ? 'active' : ''}" onclick="selectYear(${y})">
+          ${y}
+        </button>
+      `).join('');
+    }
+
+    function renderFinancialRecommendation(sum) {
+      const total = sum.totalCurrentFlow || 1;
+      const t1Pct = (sum.tierTotals.tier1.currentFlow / total) * 100;
+      const t2Pct = (sum.tierTotals.tier2.currentFlow / total) * 100;
+      const t345Pct = ((sum.tierTotals.tier3.currentFlow + sum.tierTotals.tier4.currentFlow + sum.tierTotals.tier5.currentFlow) / total) * 100;
+
+      let t1Eval = t1Pct > 25 ? `<span style="color:#f87171;">Vượt mức khuyến nghị (${t1Pct.toFixed(1)}% so với chuẩn 10-20%)</span>` : `<span style="color:#34d399;">An toàn (${t1Pct.toFixed(1)}%)</span>`;
+      let t2Eval = `<span style="color:#34d399;">Tích lũy vững chắc (${t2Pct.toFixed(1)}%) — Tạo +${fmtTr(sum.tierTotals.tier2.yearlyGain / 1000000)} Tr tiền lãi/năm</span>`;
+
+      document.getElementById('recommendationContent').innerHTML = `
+        <div>• <b>Tầng 1 (Nền móng & Dự phòng):</b> Đang chiếm ${t1Pct.toFixed(1)}% — ${t1Eval}.</div>
+        <div style="margin-top:2px;">• <b>Tầng 2 (Tiết kiệm & Vàng):</b> Đang chiếm ${t2Pct.toFixed(1)}% — ${t2Eval}.</div>
+        <div style="margin-top:2px;">• <b>Tầng 3-5 (Tăng trưởng & Đầu cơ):</b> Đang chiếm ${t345Pct.toFixed(1)}%. Có thể trích một phần lãi tiết kiệm (+${fmtTr(sum.totalYearlyGain / 1000000)} Tr/năm) sang CCQ/Cổ phiếu.</div>
+      `;
+    }
+
+    function renderGroupDonutAndLegend(sum) {
+      const svg = document.getElementById('groupDonutSvg');
+      const legend = document.getElementById('groupLegendContainer');
+
+      if (sum.groupsArray.length === 0) {
+        svg.innerHTML = `<circle cx="65" cy="65" r="48" fill="none" stroke="#1e293b" stroke-width="18" />`;
+        legend.innerHTML = `<div style="font-size:11px; color:var(--text-muted);">Không có dữ liệu.</div>`;
+        return;
+      }
+
+      const radius = 48;
+      const circumference = 2 * Math.PI * radius;
+      let accumulatedPercent = 0;
+
+      const circlesHtml = sum.groupsArray.map(g => {
+        const strokeDash = (g.percent / 100) * circumference;
+        const strokeOffset = -((accumulatedPercent / 100) * circumference);
+        accumulatedPercent += g.percent;
+        return `<circle cx="65" cy="65" r="${radius}" fill="none" stroke="${g.color}" stroke-width="18" stroke-dasharray="${strokeDash} ${circumference}" stroke-dashoffset="${strokeOffset}" transform="rotate(-90 65 65)" style="transition: all 0.4s;" />`;
+      }).join('');
+
+      svg.innerHTML = circlesHtml;
+      document.getElementById('donutCenterValue').textContent = `${fmtTr(sum.totalCurrentFlow / 1000000000)} Tỷ`;
+
+      legend.innerHTML = sum.groupsArray.map(g => {
+        const isSelected = currentGroupFilter === g.category;
+        const diffSign = g.deltaVND >= 0 ? '+' : '';
+        const diffColor = g.deltaVND > 0 ? '#34d399' : (g.deltaVND < 0 ? '#fb7185' : '#94a3b8');
+        const safeCat = g.category.replace(/'/g, "\'");
+        return `
+          <div class="legend-item ${isSelected ? 'active-group' : ''}" onclick="toggleGroupFilter('${safeCat}')">
+            <div style="display:flex; justify-content:space-between; align-items:center; font-size:11px; font-weight:700;">
+              <div style="display:flex; align-items:center; gap:6px;">
+                <span style="width:8px; height:8px; border-radius:50%; background:${g.color}; display:inline-block;"></span>
+                <span style="color:#fff;">${g.category} (${g.count})</span>
+              </div>
+              <span class="mono" style="color:${g.color};">${g.percent.toFixed(1)}%</span>
+            </div>
+            <div class="mono" style="display:flex; justify-content:space-between; font-size:10px; color:var(--text-muted); margin-top:2px;">
+              <span>Gốc: ${fmtTr(g.principalVND / 1000000)} Tr</span>
+              <span style="color:#e2e8f0; font-weight:700;">DT hiện tại: ${fmtTr(g.currentFlowVND / 1000000)} Tr (<span style="color:${diffColor}">${diffSign}${fmtTr(g.deltaVND / 1000000)}Tr</span>)</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // RENDER THÁP TÀI SẢN 5 TẦNG HÌNH THÁP CHUẨN
+    function renderPyramid(sum) {
+      const container = document.getElementById('pyramidContainer');
+      const total = Math.max(1, sum.totalCurrentFlow);
+      const tiers = [
+        { id: 'tier5', num: 'Tầng 5 (Đỉnh)', name: 'Cơ hội & Phải thu', wCls: 'tier-w-5', data: sum.tierTotals.tier5 },
+        { id: 'tier4', num: 'Tầng 4', name: 'Cổ phiếu tăng trưởng', wCls: 'tier-w-4', data: sum.tierTotals.tier4 },
+        { id: 'tier3', num: 'Tầng 3', name: 'Tài sản sinh lời', wCls: 'tier-w-3', data: sum.tierTotals.tier3 },
+        { id: 'tier2', num: 'Tầng 2', name: 'Tiết kiệm & Vàng', wCls: 'tier-w-2', data: sum.tierTotals.tier2 },
+        { id: 'tier1', num: 'Tầng 1 (Đáy)', name: 'Nền móng & Dự phòng', wCls: 'tier-w-1', data: sum.tierTotals.tier1 }
+      ];
+
+      container.innerHTML = tiers.map(t => {
+        const val = t.data.currentFlow;
+        const orig = t.data.principal;
+        const pct = ((val / total) * 100).toFixed(1);
+        const isSel = currentTierFilter === t.id;
+        return `
+          <div onclick="toggleTierFilter('${t.id}')" class="pyramid-tier-bar ${t.wCls}" style="${isSel ? 'box-shadow: 0 0 0 2.5px #fff, 0 8px 20px rgba(0,0,0,0.5);' : ''}">
+            <div style="min-width:0; padding-right:6px;">
+              <div style="font-size:11px; font-weight:800; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                ${t.num} • ${t.name} (${t.data.count})
+              </div>
+              <div class="mono" style="font-size:9px; color:rgba(255,255,255,0.88);">
+                Gốc: ${fmtTr(orig / 1000000)} Tr → Hiện tại: ${fmtTr(val / 1000000)} Tr
+              </div>
+            </div>
+            <div class="mono" style="text-align:right; flex-shrink:0;">
+              <div style="font-size:11px; font-weight:800; color:#fff;">${fmtTr(val / 1000000)} Tr</div>
+              <div style="font-size:9px; font-weight:700; background:rgba(0,0,0,0.32); padding:1px 6px; border-radius:5px; display:inline-block; color:#fff;">${pct}%</div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderAutoYearlyTable(years) {
+      const tbody = document.getElementById('yearlyTableBody');
+      tbody.innerHTML = years.map(y => {
+        const ySum = aggregatePortfolio(y);
+        const isCurr = Number(appData.selectedYear) === y;
+        const sign = ySum.totalDelta >= 0 ? '+' : '';
+        const pct = ySum.totalPrincipal > 0 ? (ySum.totalDelta / ySum.totalPrincipal) * 100 : 0;
+        return `
+          <tr class="${isCurr ? 'active-row' : ''}" onclick="selectYear(${y})" style="cursor:pointer;">
+            <td>${isCurr ? '👉 ' : ''}Năm ${y}</td>
+            <td style="color:var(--text-muted);">${ySum.heldCount}</td>
+            <td style="color:#cbd5e1;">${fmtTr(ySum.totalPrincipal / 1000000000)} Tỷ</td>
+            <td style="color:#34d399; font-weight:700;">+${fmtTr(ySum.totalYearlyGain / 1000000)} Tr/năm</td>
+            <td style="color:#38bdf8; font-weight:800;">${fmtTr(ySum.totalCurrentFlow / 1000000000)} Tỷ</td>
+            <td style="color:${ySum.totalDelta >= 0 ? '#34d399' : '#fb7185'}; font-weight:700;">${sign}${fmtTr(ySum.totalDelta / 1000000)}Tr (${sign}${pct.toFixed(1)}%)</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function renderAssetsSection(sum) {
+      const container = document.getElementById('assetListContainer');
+      let filteredGroups = sum.groupsArray.map(g => {
+        const items = g.items.filter(item => {
+          const matchTier = currentTierFilter === 'all' || item.tier === currentTierFilter;
+          const matchGroup = currentGroupFilter === 'all' || item.category === currentGroupFilter;
+          return matchTier && matchGroup;
+        });
+        return { ...g, items };
+      }).filter(g => g.items.length > 0);
+
+      if (filteredGroups.length === 0) {
+        container.innerHTML = `<div style="text-align:center; padding:24px; color:var(--text-muted); font-size:12px; background:var(--bg-card); border-radius:18px;">Không có tài sản khớp bộ lọc. <button onclick="clearAllFilters()" style="margin-top:6px; background:#3b82f6; color:#fff; border:none; padding:5px 10px; border-radius:6px; cursor:pointer;">Xóa bộ lọc</button></div>`;
+        return;
+      }
+
+      container.innerHTML = filteredGroups.map(g => {
+        let grpP = 0, grpF = 0, grpD = 0, grpYearly = 0;
+        g.items.forEach(i => {
+          grpP += i.metrics.principalVND;
+          grpF += i.metrics.currentFlowVND;
+          grpD += i.metrics.deltaVND;
+          grpYearly += i.metrics.yearlyGainVND;
+        });
+        const sign = grpD >= 0 ? '+' : '';
+        const diffColor = grpD > 0 ? '#34d399' : (grpD < 0 ? '#fb7185' : '#94a3b8');
+
+        return `
+          <div class="group-block">
+            <div class="group-header-card" style="border-left-color:${g.color};">
+              <div>
+                <div style="font-size:13px; font-weight:800; color:#fff; display:flex; align-items:center; gap:6px;">
+                  <span>${g.category}</span>
+                  <span style="font-size:10px; background:rgba(255,255,255,0.1); padding:1px 6px; border-radius:8px; color:#cbd5e1;">${g.items.length} mục</span>
+                </div>
+                <div class="mono" style="font-size:10px; color:var(--text-muted); margin-top:2px;">
+                  Tổng gốc: <b style="color:#e2e8f0;">${fmtVND(grpP)}</b>
+                  ${grpYearly > 0 ? ` • Lãi/năm: <b style="color:#34d399;">+${fmtTr(grpYearly / 1000000)} Tr</b>` : ''}
+                </div>
+              </div>
+              <div class="mono" style="text-align:right;">
+                <div style="font-size:13px; font-weight:800; color:#38bdf8;">DT hiện tại: ${fmtVND(grpF)}</div>
+                <div style="font-size:10px; font-weight:700; color:${diffColor};">Lãi đến nay: ${sign}${fmtVND(grpD)}</div>
+              </div>
+            </div>
+            <div class="asset-list">
+              ${g.items.map(item => renderAssetCard(item)).join('')}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderAssetCard(item) {
+      const m = item.metrics;
+      const isUrgent = item.type === 'savings' && m.daysRemaining >= 0 && m.daysRemaining <= 30;
+      const deltaSign = m.deltaVND >= 0 ? '+' : '';
+      const deltaColor = m.deltaVND > 0 ? '#34d399' : (m.deltaVND < 0 ? '#fb7185' : '#94a3b8');
+
+      let subInfoLine1 = '';
+      let subInfoLine2 = '';
+
+      if (item.type === 'savings') {
+        const remText = m.daysRemaining >= 0 ? `Còn ${m.daysRemaining} ngày` : 'Đã đáo hạn';
+        subInfoLine1 = `<span style="color:#34d399; font-weight:700;">${item.rateNum}%/năm</span> • <span>Đã gửi ${m.elapsedDays}/${m.totalTermDays} ngày (${remText})</span>`;
+        subInfoLine2 = `<span>📅 ${fmtDateVN(item.startDate)} → ${fmtDateVN(item.maturityDate)}</span> • <span style="color:#a7f3d0;">Lãi đến nay: +${fmtVND(m.accruedInterestVND)}</span>`;
+      } else if (item.type === 'gold') {
+        const marketP = m.activeMarketPrice || resolveLiveGoldMarketPrice(item.name);
+        subInfoLine1 = `<span style="color:#fbbf24; font-weight:700;">${item.qty} Chỉ</span> • <span>Giá vốn mua: ${fmtVND(item.buyPrice)}/chỉ</span>`;
+        subInfoLine2 = `<span>Giá mua vào hiện tại (GitHub): <b style="color:#fde68a;">${fmtVND(marketP)}/chỉ</b></span>`;
+      } else if (item.type === 'stock') {
+        subInfoLine1 = `<span style="color:#38bdf8; font-weight:700;">${new Intl.NumberFormat('vi-VN').format(item.qty || 0)} CP/CCQ</span> • <span>Cổ tức: ${item.rateNum || 0}%/năm</span>`;
+        subInfoLine2 = `<span>Giá vốn: ${fmtVND(item.buyPrice)} → Thị giá: ${fmtVND(item.marketPrice || item.buyPrice)}</span>`;
+      } else {
+        subInfoLine1 = `<span style="color:#cbd5e1; font-weight:600;">${item.subType || 'Tài sản khác'}</span> • <span>${item.rateNum > 0 ? `Lãi: ${item.rateNum}%/năm` : 'Quỹ dự phòng 0%'}</span>`;
+        subInfoLine2 = `<span>📅 Bắt đầu: ${fmtDateVN(item.startDate)}</span>`;
+      }
+
+      const iconChar = item.type === 'gold' ? '🪙' : (item.type === 'savings' ? '🏦' : (item.type === 'stock' ? '📈' : '💰'));
+
+      return `
+        <div class="asset-card ${isUrgent ? 'alert-border' : ''}" onclick="openEditModal('${item.id}')">
+          <div style="display:flex; align-items:center; gap:10px; min-width:0; padding-right:8px;">
+            <div style="width:40px; height:40px; border-radius:12px; background:rgba(16,185,129,0.14); color:#34d399; display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0;">
+              ${iconChar}
+            </div>
+            <div style="min-width:0;">
+              <div style="font-size:13px; font-weight:800; color:#fff; display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+                <span>${item.name}</span>
+                ${isUrgent ? '<span style="font-size:9px; background:#f43f5e; color:#fff; padding:1px 6px; border-radius:5px; font-weight:800;">Sắp đáo hạn</span>' : ''}
+              </div>
+              <div style="font-size:11px; color:var(--text-muted); margin-top:2px;">${subInfoLine1}</div>
+              <div class="mono" style="font-size:10px; color:#64748b; margin-top:2px;">${subInfoLine2}</div>
+            </div>
+          </div>
+          <div class="mono" style="text-align:right; flex-shrink:0;">
+            <div style="font-size:13px; font-weight:800; color:#38bdf8;">${fmtVND(m.currentFlowVND)}</div>
+            <div style="font-size:10px; color:var(--text-muted);">Gốc: ${fmtTr(m.principalVND / 1000000)} Tr</div>
+            <div style="font-size:10px; font-weight:700; color:${deltaColor};">${deltaSign}${fmtVND(m.deltaVND)}</div>
+          </div>
+        </div>
+      `;
+    }
+
+    // HỆ THỐNG THÊM / SỬA TÀI SẢN ĐA HÌNH THÁI (CUSTOM FORMS PER ASSET TYPE)
+    let draftFormState = {};
+
+    function openAddModalSelectType() {
+      openModal('modalSelectType');
+    }
+
+    function openAddForm(type) {
+      closeModal('modalSelectType');
+      document.getElementById('formEditId').value = '';
+      document.getElementById('formAssetType').value = type;
+      document.getElementById('formDeleteBtn').style.display = 'none';
+
+      const defaultGoldBrand = 'Vàng nguyên liệu 999,9';
+      const liveGoldP = resolveLiveGoldMarketPrice(defaultGoldBrand);
+
+      draftFormState = {
+        type,
+        name: type === 'gold' ? defaultGoldBrand : '',
+        category: type === 'savings' ? 'Ngân hàng SHB' : (type === 'gold' ? 'Vàng tích sản' : (type === 'stock' ? 'Cổ phiếu & CCQ' : 'Phường & Cho vay dự phòng')),
+        tier: type === 'savings' || type === 'gold' ? 'tier2' : (type === 'stock' ? 'tier4' : 'tier1'),
+        principalVND: 200000000,
+        rateNum: type === 'savings' ? 8.5 : (type === 'stock' ? 5.0 : 0),
+        termMonths: 12,
+        startDate: appData.referenceDate || getTodayISOString(),
+        maturityDate: addMonthsToDate(appData.referenceDate || getTodayISOString(), 12),
+        holdUntilYear: 2027,
+        qty: type === 'gold' ? 10 : 1000,
+        buyPrice: type === 'gold' ? liveGoldP : 50000,
+        marketPrice: type === 'gold' ? liveGoldP : 54000,
+        subType: 'Phường / Họ',
+        manualDeltaVND: 0
+      };
+
+      updateModalHeaderAndTabs(type, false);
+      renderFormFields(type, draftFormState);
+      updateLiveFormPreview();
+      openModal('modalFormDynamic');
+
+      if (type === 'gold') {
+        fetchLiveGoldPrices(false);
+      }
+    }
+
+    function openEditModal(id) {
+      const item = appData.assets.find(x => x.id === id);
+      if (!item) return;
+
+      const type = item.type || 'other';
+      document.getElementById('formEditId').value = item.id;
+      document.getElementById('formAssetType').value = type;
+      document.getElementById('formDeleteBtn').style.display = 'block';
+
+      draftFormState = JSON.parse(JSON.stringify(item));
+      if (type === 'gold') {
+        draftFormState.marketPrice = resolveLiveGoldMarketPrice(item.name);
+      }
+      updateModalHeaderAndTabs(type, true, item.name);
+      renderFormFields(type, draftFormState);
+      updateLiveFormPreview();
+      openModal('modalFormDynamic');
+    }
+
+    function switchModalAssetType(newType) {
+      document.getElementById('formAssetType').value = newType;
+      draftFormState.type = newType;
+      if (newType === 'savings') {
+        draftFormState.category = 'Ngân hàng SHB';
+        draftFormState.tier = 'tier2';
+        draftFormState.rateNum = draftFormState.rateNum || 8.5;
+      } else if (newType === 'gold') {
+        draftFormState.category = 'Vàng tích sản';
+        draftFormState.tier = 'tier2';
+        draftFormState.name = 'Vàng nguyên liệu 999,9';
+        const liveP = resolveLiveGoldMarketPrice(draftFormState.name);
+        draftFormState.qty = draftFormState.qty || 10;
+        draftFormState.buyPrice = liveP;
+        draftFormState.marketPrice = liveP;
+      } else if (newType === 'stock') {
+        draftFormState.category = 'Cổ phiếu & CCQ';
+        draftFormState.tier = 'tier4';
+        draftFormState.qty = draftFormState.qty || 1000;
+        draftFormState.buyPrice = draftFormState.buyPrice || 55000;
+        draftFormState.marketPrice = draftFormState.marketPrice || 60000;
+        draftFormState.rateNum = draftFormState.rateNum || 5.0;
+      } else {
+        draftFormState.category = 'Phường & Cho vay dự phòng';
+        draftFormState.tier = 'tier1';
+        draftFormState.rateNum = 0;
+      }
+
+      const isEdit = Boolean(document.getElementById('formEditId').value);
+      updateModalHeaderAndTabs(newType, isEdit, draftFormState.name);
+      renderFormFields(newType, draftFormState);
+      updateLiveFormPreview();
+    }
+
+    function updateModalHeaderAndTabs(type, isEdit, itemName) {
+      const titles = {
+        savings: '🏦 Sổ Tiết Kiệm Ngân Hàng',
+        gold: '🪙 Vàng Tích Sản (Đồng bộ GitHub)',
+        stock: '📈 Cổ Phiếu / Chứng Chỉ Quỹ',
+        other: '💰 Phường / Cho Vay / Tài Sản Khác'
+      };
+      document.getElementById('formModalTitle').textContent = isEdit
+        ? `Chỉnh sửa: ${itemName || titles[type]}`
+        : `Thêm mới: ${titles[type]}`;
+
+      ['savings', 'gold', 'stock', 'other'].forEach(t => {
+        const btn = document.getElementById('tabType_' + t);
+        if (btn) btn.classList.toggle('active', t === type);
+      });
+    }
+
+    // RENDER CÁC TRƯỜNG NHẬP LIỆU CHUYÊN BIỆT CHO TỪNG LOẠI TÀI SẢN
+    function renderFormFields(type, data) {
+      const c = document.getElementById('formFieldsContainer');
+
+      if (type === 'savings') {
+        c.innerHTML = `
+          <div class="grid-2">
+            <div class="form-group">
+              <label class="form-label">Mã sổ / Tên sổ tiết kiệm</label>
+              <input required id="dynName" type="text" class="form-control" value="${data.name || ''}" placeholder="VD: SHB8, Seabank4..." oninput="updateLiveFormPreview()" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Ngân hàng (Nhóm)</label>
+              <input required id="dynCategory" list="bankSuggestions" type="text" class="form-control" value="${data.category || 'Ngân hàng SHB'}" placeholder="VD: Ngân hàng SHB" />
+              <datalist id="bankSuggestions">
+                <option value="Ngân hàng SHB">
+                <option value="Ngân hàng Seabank">
+                <option value="Ngân hàng Vietcombank">
+                <option value="Ngân hàng Techcombank">
+                <option value="Ngân hàng VPBank">
+                <option value="Ngân hàng MB">
+              </datalist>
+            </div>
+          </div>
+
+          <div class="grid-3">
+            <div class="form-group">
+              <label class="form-label">Số vốn gốc (Triệu ₫)</label>
+              <input required id="dynPrincipal" type="number" step="0.01" class="form-control mono" value="${data.principalVND ? data.principalVND / 1000000 : 200}" oninput="updateLiveFormPreview()" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Lãi suất (%/năm)</label>
+              <input required id="dynRate" type="number" step="0.05" class="form-control mono" value="${data.rateNum !== undefined ? data.rateNum : 8.5}" oninput="updateLiveFormPreview()" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Kỳ hạn gửi</label>
+              <select id="dynTermMonths" class="form-control" onchange="onSavingsTermChange()">
+                <option value="1" ${data.termMonths==1?'selected':''}>1 Tháng</option>
+                <option value="3" ${data.termMonths==3?'selected':''}>3 Tháng</option>
+                <option value="6" ${data.termMonths==6?'selected':''}>6 Tháng</option>
+                <option value="12" ${(!data.termMonths || data.termMonths==12)?'selected':''}>12 Tháng (1 Năm)</option>
+                <option value="18" ${data.termMonths==18?'selected':''}>18 Tháng</option>
+                <option value="24" ${data.termMonths==24?'selected':''}>24 Tháng</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <div class="form-group">
+              <label class="form-label">Ngày gửi (Mở sổ)</label>
+              <input required id="dynStartDate" type="date" class="form-control mono" value="${data.startDate || getTodayISOString()}" onchange="onSavingsStartDateChange()" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Ngày đáo hạn (Tự tính / Chỉnh tay)</label>
+              <input required id="dynMaturityDate" type="date" class="form-control mono" value="${data.maturityDate || addMonthsToDate(getTodayISOString(), 12)}" onchange="onSavingsMaturityChange()" />
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <div class="form-group">
+              <label class="form-label">Phân tầng Tháp Tài Sản</label>
+              <select id="dynTier" class="form-control">
+                <option value="tier2" ${(!data.tier || data.tier==='tier2')?'selected':''}>Tầng 2: Tiết kiệm & Vàng</option>
+                <option value="tier1" ${data.tier==='tier1'?'selected':''}>Tầng 1: Nền móng & Dự phòng</option>
+                <option value="tier3" ${data.tier==='tier3'?'selected':''}>Tầng 3: Tài sản sinh lời</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Giữ trong lộ trình đến năm</label>
+              <input required id="dynHoldUntil" type="number" min="2026" max="2045" class="form-control mono" value="${data.holdUntilYear || 2027}" />
+            </div>
+          </div>
+        `;
+      } else if (type === 'gold') {
+        const selectedBrand = data.name || 'Vàng nguyên liệu 999,9';
+        const marketP = resolveLiveGoldMarketPrice(selectedBrand);
+        const buyP = data.buyPrice || marketP;
+        c.innerHTML = `
+          <div class="grid-2">
+            <div class="form-group">
+              <label class="form-label">Loại vàng (Theo chuẩn GitHub JSON)</label>
+              <select id="dynName" class="form-control" onchange="onGoldBrandChange(this.value)">
+                <option value="Vàng nguyên liệu 999,9" ${selectedBrand==='Vàng nguyên liệu 999,9'?'selected':''}>Vàng nguyên liệu 999,9</option>
+                <option value="Vàng miếng SJC (Cty CP BTMH)" ${selectedBrand==='Vàng miếng SJC (Cty CP BTMH)'?'selected':''}>Vàng miếng SJC (Cty CP BTMH)</option>
+                <option value="Vàng Bảo Tín Minh Châu" ${selectedBrand==='Vàng Bảo Tín Minh Châu'?'selected':''}>Vàng Bảo Tín Minh Châu</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Nhóm danh mục</label>
+              <input required id="dynCategory" type="text" class="form-control" value="${data.category || 'Vàng tích sản'}" />
+            </div>
+          </div>
+
+          <div class="grid-3">
+            <div class="form-group">
+              <label class="form-label">Số lượng (Chỉ vàng)</label>
+              <input required id="dynQty" type="number" step="0.1" class="form-control mono" value="${data.qty || 10}" oninput="updateLiveFormPreview()" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Giá vốn lúc mua (₫/Chỉ)</label>
+              <input required id="dynBuyPrice" type="number" step="1000" class="form-control mono" value="${buyP}" oninput="updateLiveFormPreview()" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Giá mua vào hiện tại (₫/Chỉ)</label>
+              <input required id="dynMarketPrice" type="number" step="1000" class="form-control mono" value="${marketP}" oninput="updateLiveFormPreview()" />
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <div class="form-group">
+              <label class="form-label">Phân tầng Tháp Tài Sản</label>
+              <select id="dynTier" class="form-control">
+                <option value="tier2" ${(!data.tier || data.tier==='tier2')?'selected':''}>Tầng 2: Tiết kiệm & Vàng</option>
+                <option value="tier1" ${data.tier==='tier1'?'selected':''}>Tầng 1: Nền móng & Dự phòng</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Giữ tích sản đến năm</label>
+              <input required id="dynHoldUntil" type="number" min="2026" max="2045" class="form-control mono" value="${data.holdUntilYear || 2028}" />
+            </div>
+          </div>
+        `;
+      } else if (type === 'stock') {
+        c.innerHTML = `
+          <div class="grid-2">
+            <div class="form-group">
+              <label class="form-label">Mã Cổ phiếu / Chứng chỉ quỹ</label>
+              <input required id="dynName" type="text" class="form-control mono" value="${data.name || ''}" placeholder="VD: REE, FPT, QTP, VESAF..." oninput="updateLiveFormPreview()" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Nhóm ngành / Quỹ</label>
+              <input required id="dynCategory" type="text" class="form-control" value="${data.category || 'Cổ phiếu & CCQ'}" placeholder="VD: Cổ phiếu ngành điện" />
+            </div>
+          </div>
+
+          <div class="grid-3">
+            <div class="form-group">
+              <label class="form-label">Số lượng (CP / CCQ)</label>
+              <input required id="dynQty" type="number" step="1" class="form-control mono" value="${data.qty || 1000}" oninput="updateLiveFormPreview()" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Giá vốn mua (VNĐ/CP)</label>
+              <input required id="dynBuyPrice" type="number" step="100" class="form-control mono" value="${data.buyPrice || 55000}" oninput="updateLiveFormPreview()" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Thị giá hiện tại (VNĐ/CP)</label>
+              <input required id="dynMarketPrice" type="number" step="100" class="form-control mono" value="${data.marketPrice || data.buyPrice || 60000}" oninput="updateLiveFormPreview()" />
+            </div>
+          </div>
+
+          <div class="grid-3">
+            <div class="form-group">
+              <label class="form-label">Cổ tức tiền mặt (%/năm)</label>
+              <input required id="dynRate" type="number" step="0.1" class="form-control mono" value="${data.rateNum !== undefined ? data.rateNum : 5.0}" oninput="updateLiveFormPreview()" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Phân tầng Tháp</label>
+              <select id="dynTier" class="form-control">
+                <option value="tier4" ${(!data.tier || data.tier==='tier4')?'selected':''}>Tầng 4: Cổ phiếu tăng trưởng</option>
+                <option value="tier3" ${data.tier==='tier3'?'selected':''}>Tầng 3: Tài sản sinh lời (CCQ)</option>
+                <option value="tier5" ${data.tier==='tier5'?'selected':''}>Tầng 5: Đầu cơ lướt sóng</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Giữ đến năm</label>
+              <input required id="dynHoldUntil" type="number" min="2026" max="2045" class="form-control mono" value="${data.holdUntilYear || 2028}" />
+            </div>
+          </div>
+        `;
+      } else {
+        // Loại Khác: Phường / Cho vay / BĐS / Quỹ dự phòng
+        c.innerHTML = `
+          <div class="grid-2">
+            <div class="form-group">
+              <label class="form-label">Tên khoản mục</label>
+              <input required id="dynName" type="text" class="form-control" value="${data.name || ''}" placeholder="VD: Phường, Tiền cho vay, Đất nền..." oninput="updateLiveFormPreview()" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Hình thức tài sản</label>
+              <select id="dynSubType" class="form-control">
+                <option value="Phường / Họ" ${data.subType==='Phường / Họ'?'selected':''}>Chơi Phường / Họ</option>
+                <option value="Cho vay cá nhân" ${data.subType==='Cho vay cá nhân'?'selected':''}>Cho vay cá nhân</option>
+                <option value="Bất động sản" ${data.subType==='Bất động sản'?'selected':''}>Bất động sản</option>
+                <option value="Quỹ tiền mặt dự phòng" ${data.subType==='Quỹ tiền mặt dự phòng'?'selected':''}>Quỹ tiền mặt dự phòng</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="grid-3">
+            <div class="form-group">
+              <label class="form-label">Số vốn gốc (Triệu ₫)</label>
+              <input required id="dynPrincipal" type="number" step="0.01" class="form-control mono" value="${data.principalVND ? data.principalVND / 1000000 : 150}" oninput="updateLiveFormPreview()" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Lãi suất kỳ vọng (%/năm)</label>
+              <input required id="dynRate" type="number" step="0.1" class="form-control mono" value="${data.rateNum !== undefined ? data.rateNum : 0}" oninput="updateLiveFormPreview()" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Lãi/Chênh lệch cộng thêm (Tr)</label>
+              <input id="dynManualDelta" type="number" step="0.1" class="form-control mono" value="${data.manualDeltaVND ? data.manualDeltaVND / 1000000 : 0}" oninput="updateLiveFormPreview()" />
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <div class="form-group">
+              <label class="form-label">Nhóm danh mục</label>
+              <input required id="dynCategory" type="text" class="form-control" value="${data.category || 'Phường & Cho vay dự phòng'}" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Phân tầng Tháp Tài Sản</label>
+              <select id="dynTier" class="form-control">
+                <option value="tier1" ${(!data.tier || data.tier==='tier1')?'selected':''}>Tầng 1: Nền móng & Dự phòng</option>
+                <option value="tier3" ${data.tier==='tier3'?'selected':''}>Tầng 3: Tài sản sinh lời (BĐS)</option>
+                <option value="tier5" ${data.tier==='tier5'?'selected':''}>Tầng 5: Cơ hội & Phải thu</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <div class="form-group">
+              <label class="form-label">Ngày bắt đầu</label>
+              <input required id="dynStartDate" type="date" class="form-control mono" value="${data.startDate || getTodayISOString()}" oninput="updateLiveFormPreview()" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Giữ đến năm</label>
+              <input required id="dynHoldUntil" type="number" min="2026" max="2045" class="form-control mono" value="${data.holdUntilYear || 2027}" />
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    function onSavingsTermChange() {
+      const startEl = document.getElementById('dynStartDate');
+      const termEl = document.getElementById('dynTermMonths');
+      const matEl = document.getElementById('dynMaturityDate');
+      const holdEl = document.getElementById('dynHoldUntil');
+      if (startEl && termEl && matEl) {
+        const newMat = addMonthsToDate(startEl.value, parseInt(termEl.value) || 12);
+        matEl.value = newMat;
+        if (holdEl) holdEl.value = Number(newMat.split('-')[0]) || 2027;
+      }
+      updateLiveFormPreview();
+    }
+
+    function onSavingsStartDateChange() {
+      onSavingsTermChange();
+    }
+
+    function onSavingsMaturityChange() {
+      const matEl = document.getElementById('dynMaturityDate');
+      const holdEl = document.getElementById('dynHoldUntil');
+      if (matEl && holdEl && matEl.value) {
+        holdEl.value = Number(matEl.value.split('-')[0]) || 2027;
+      }
+      updateLiveFormPreview();
+    }
+
+    function onGoldBrandChange(brand) {
+      const buyInput = document.getElementById('dynBuyPrice');
+      const marketInput = document.getElementById('dynMarketPrice');
+      const isEditing = Boolean(document.getElementById('formEditId')?.value);
+      const liveP = resolveLiveGoldMarketPrice(brand);
+      if (liveP > 0) {
+        if (marketInput) marketInput.value = liveP;
+        if (buyInput && !isEditing) buyInput.value = liveP;
+      }
+      updateLiveFormPreview();
+    }
+
+    // XEM TRƯỚC TỨC THÌ DÒNG TIỀN NGAY TRONG CỬA SỔ THÊM/SỬA TÀI SẢN
+    function updateLiveFormPreview() {
+      const type = document.getElementById('formAssetType').value;
+      const box = document.getElementById('formLivePreviewBox');
+      if (!box) return;
+
+      if (type === 'savings') {
+        const pTr = parseFloat(document.getElementById('dynPrincipal')?.value) || 0;
+        const principal = pTr * 1000000;
+        const rate = parseFloat(document.getElementById('dynRate')?.value) || 0;
+        const startStr = document.getElementById('dynStartDate')?.value || appData.referenceDate;
+        const matStr = document.getElementById('dynMaturityDate')?.value || addMonthsToDate(startStr, 12);
+
+        const totalDays = Math.max(1, daysBetween(startStr, matStr));
+        const elapsedDays = Math.min(totalDays, Math.max(0, daysBetween(startStr, appData.referenceDate)));
+
+        const dailyProfit = (principal * (rate / 100)) / 365;
+        const yearlyProfit = principal * (rate / 100);
+        const accruedProfit = dailyProfit * elapsedDays;
+        const fullTermProfit = dailyProfit * totalDays;
+
+        box.innerHTML = `
+          <div style="color:#6ee7b7; font-weight:800; margin-bottom:4px;">📊 Xem trước dòng tiền sổ tiết kiệm (đến ${fmtDateVN(appData.referenceDate)}):</div>
+          <div style="display:flex; justify-content:space-between;"><span>• Lãi mỗi ngày / năm:</span><b style="color:#34d399;">+${fmtVND(dailyProfit)}/ngày • +${fmtVND(yearlyProfit)}/năm</b></div>
+          <div style="display:flex; justify-content:space-between; margin-top:2px;"><span>• Dòng tiền hiện tại (${elapsedDays} ngày đã gửi):</span><b style="color:#38bdf8;">${fmtVND(principal + accruedProfit)} (Lãi +${fmtVND(accruedProfit)})</b></div>
+          <div style="display:flex; justify-content:space-between; margin-top:2px;"><span>• Dự phóng trọn kỳ (${totalDays} ngày):</span><b style="color:#94a3b8;">${fmtVND(principal + fullTermProfit)} (Lãi +${fmtTr(fullTermProfit/1000000)} Tr)</b></div>
+        `;
+      } else if (type === 'gold') {
+        const qty = parseFloat(document.getElementById('dynQty')?.value) || 0;
+        const buyP = parseFloat(document.getElementById('dynBuyPrice')?.value) || 0;
+        const marketP = parseFloat(document.getElementById('dynMarketPrice')?.value) || buyP;
+        const originVND = qty * buyP;
+        const currentVND = qty * marketP;
+        const diff = currentVND - originVND;
+        const sign = diff >= 0 ? '+' : '';
+        box.innerHTML = `
+          <div style="color:#fde68a; font-weight:800; margin-bottom:4px;">🪙 Xem trước Lãi/Lỗ Vàng tích sản (Theo giá mua vào GitHub):</div>
+          <div style="display:flex; justify-content:space-between;"><span>• Tổng vốn gốc mua vàng:</span><b style="color:#fff;">${fmtVND(originVND)}</b></div>
+          <div style="display:flex; justify-content:space-between; margin-top:2px;"><span>• Giá trị hiện tại & Lãi/Lỗ:</span><b style="color:${diff >= 0 ? '#34d399' : '#fb7185'};">${fmtVND(currentVND)} (${sign}${fmtVND(diff)})</b></div>
+        `;
+      } else if (type === 'stock') {
+        const qty = parseFloat(document.getElementById('dynQty')?.value) || 0;
+        const buyP = parseFloat(document.getElementById('dynBuyPrice')?.value) || 0;
+        const marketP = parseFloat(document.getElementById('dynMarketPrice')?.value) || buyP;
+        const rate = parseFloat(document.getElementById('dynRate')?.value) || 0;
+        const originVND = qty * buyP;
+        const capGain = qty * (marketP - buyP);
+        const yearlyDiv = originVND * (rate / 100);
+        const sign = capGain >= 0 ? '+' : '';
+        box.innerHTML = `
+          <div style="color:#6ee7b7; font-weight:800; margin-bottom:4px;">📈 Xem trước danh mục Cổ phiếu / CCQ:</div>
+          <div style="display:flex; justify-content:space-between;"><span>• Tổng giá vốn đầu tư:</span><b style="color:#fff;">${fmtVND(originVND)}</b></div>
+          <div style="display:flex; justify-content:space-between; margin-top:2px;"><span>• Lãi/Lỗ thị giá + Cổ tức/năm:</span><b style="color:#34d399;">${sign}${fmtVND(capGain)} • Cổ tức +${fmtVND(yearlyDiv)}/năm</b></div>
+        `;
+      } else {
+        const pTr = parseFloat(document.getElementById('dynPrincipal')?.value) || 0;
+        const principal = pTr * 1000000;
+        const rate = parseFloat(document.getElementById('dynRate')?.value) || 0;
+        const manualTr = parseFloat(document.getElementById('dynManualDelta')?.value) || 0;
+        const yearlyGain = principal * (rate / 100);
+        box.innerHTML = `
+          <div style="color:#fda4af; font-weight:800; margin-bottom:4px;">💰 Xem trước khoản mục:</div>
+          <div style="display:flex; justify-content:space-between;"><span>• Vốn gốc:</span><b style="color:#fff;">${fmtVND(principal)}</b></div>
+          <div style="display:flex; justify-content:space-between; margin-top:2px;"><span>• Sinh lời mỗi năm + Chênh lệch:</span><b style="color:#34d399;">+${fmtVND(yearlyGain)}/năm ${manualTr ? `(+${manualTr} Tr)` : ''}</b></div>
+        `;
+      }
+    }
+
+    function handleFormSubmit(e) {
+      e.preventDefault();
+      const editId = document.getElementById('formEditId').value;
+      const type = document.getElementById('formAssetType').value;
+
+      const name = (document.getElementById('dynName')?.value || '').trim() || 'Tài sản mới';
+      const category = (document.getElementById('dynCategory')?.value || '').trim() || 'Nhóm khác';
+      const tier = document.getElementById('dynTier')?.value || 'tier2';
+      const holdUntilYear = parseInt(document.getElementById('dynHoldUntil')?.value) || 2027;
+
+      let assetObj = {
+        id: editId || ('ast_' + Date.now()),
+        type,
+        name,
+        category,
+        tier,
+        holdUntilYear,
+        manualDeltaVND: 0
+      };
+
+      if (type === 'savings') {
+        const principalTr = parseFloat(document.getElementById('dynPrincipal')?.value) || 0;
+        assetObj.principalVND = principalTr * 1000000;
+        assetObj.rateNum = parseFloat(document.getElementById('dynRate')?.value) || 0;
+        assetObj.termMonths = parseInt(document.getElementById('dynTermMonths')?.value) || 12;
+        assetObj.startDate = document.getElementById('dynStartDate')?.value || getTodayISOString();
+        assetObj.maturityDate = document.getElementById('dynMaturityDate')?.value || addMonthsToDate(getTodayISOString(), 12);
+      } else if (type === 'gold') {
+        const qty = parseFloat(document.getElementById('dynQty')?.value) || 0;
+        const buyPrice = parseFloat(document.getElementById('dynBuyPrice')?.value) || 0;
+        const marketPrice = parseFloat(document.getElementById('dynMarketPrice')?.value) || buyPrice;
+        assetObj.qty = qty;
+        assetObj.buyPrice = buyPrice;
+        assetObj.marketPrice = marketPrice;
+        assetObj.principalVND = qty * buyPrice;
+        assetObj.rateNum = 0;
+        assetObj.startDate = appData.referenceDate || getTodayISOString();
+        assetObj.maturityDate = `${holdUntilYear}-12-31`;
+        appData.goldPrices[name] = marketPrice;
+      } else if (type === 'stock') {
+        const qty = parseFloat(document.getElementById('dynQty')?.value) || 0;
+        const buyPrice = parseFloat(document.getElementById('dynBuyPrice')?.value) || 0;
+        const marketPrice = parseFloat(document.getElementById('dynMarketPrice')?.value) || buyPrice;
+        assetObj.qty = qty;
+        assetObj.buyPrice = buyPrice;
+        assetObj.marketPrice = marketPrice;
+        assetObj.principalVND = qty * buyPrice;
+        assetObj.rateNum = parseFloat(document.getElementById('dynRate')?.value) || 0;
+        assetObj.startDate = appData.referenceDate || getTodayISOString();
+        assetObj.maturityDate = `${holdUntilYear}-12-31`;
+      } else {
+        const principalTr = parseFloat(document.getElementById('dynPrincipal')?.value) || 0;
+        const manualDeltaTr = parseFloat(document.getElementById('dynManualDelta')?.value) || 0;
+        assetObj.subType = document.getElementById('dynSubType')?.value || 'Tài sản khác';
+        assetObj.principalVND = principalTr * 1000000;
+        assetObj.rateNum = parseFloat(document.getElementById('dynRate')?.value) || 0;
+        assetObj.manualDeltaVND = manualDeltaTr * 1000000;
+        assetObj.startDate = document.getElementById('dynStartDate')?.value || getTodayISOString();
+        assetObj.maturityDate = `${holdUntilYear}-10-28`;
+      }
+
+      if (editId) {
+        const idx = appData.assets.findIndex(x => x.id === editId);
+        if (idx !== -1) appData.assets[idx] = assetObj;
+        showToast(`Đã cập nhật: ${name}`);
+      } else {
+        appData.assets.unshift(assetObj);
+        showToast(`Đã thêm mới: ${name}`);
+      }
+
+      saveAppData();
+      closeModal('modalFormDynamic');
+      renderAll();
+    }
+
+    function handleFormDelete() {
+      const editId = document.getElementById('formEditId').value;
+      if (!editId) return;
+      appData.assets = appData.assets.filter(x => x.id !== editId);
+      saveAppData();
+      closeModal('modalFormDynamic');
+      renderAll();
+      showToast('Đã xóa tài sản khỏi danh mục!');
+    }
+
+    function selectYear(y) {
+      appData.selectedYear = Number(y);
+      saveAppData();
+      renderAll();
+    }
+
+    function toggleGroupFilter(cat) {
+      currentGroupFilter = (currentGroupFilter === cat) ? 'all' : cat;
+      renderAll();
+    }
+
+    function clearGroupFilter() { currentGroupFilter = 'all'; renderAll(); }
+    function toggleTierFilter(tier) { currentTierFilter = (currentTierFilter === tier) ? 'all' : tier; renderAll(); }
+    function clearAllFilters() { currentTierFilter = 'all'; currentGroupFilter = 'all'; renderAll(); }
+
+    function changeRefDate(val) {
+      if (val) {
+        appData.referenceDate = val;
+        saveAppData();
+        renderAll();
+        showToast(`Đã đổi ngày chốt tính lãi: ${fmtDateVN(val)}`);
+      }
+    }
+
+    // Khởi chạy ứng dụng & tự động đồng bộ giá vàng từ GitHub
+    renderAll();
+    fetchLiveGoldPrices(false);
+  </script>
+</body>
+</html>
